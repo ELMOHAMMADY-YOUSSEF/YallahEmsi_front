@@ -1,0 +1,21 @@
+@import "tailwindcss";
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(80px); opacity: .18;
+  animation: orbFloat linear infinite;
+}
+.orb-1 { width:500px;height:500px;background:#16a34a;top:-100px;left:-100px;animation-duration:18s }
+.orb-2 { width:350px;height:350px;background:#15803d;bottom:-80px;right:-80px;animation-duration:22s;animation-delay:-8s }
+.orb-3 { width:250px;height:250px;background:#22c55e;top:40%;left:60%;animation-duration:15s;animation-delay:-4s }
+.bg-grid {
+  position:fixed;inset:0;
+  background-image: linear-gradient(rgba(34,197,94,.07) 1px,transparent 1px),
+                    linear-gradient(90deg,rgba(34,197,94,.07) 1px,transparent 1px);
+  background-size:56px 56px;
+  animation:gridScroll 25s linear infinite;
+}
+@keyframes orbFloat {
+  0%{transform:translate(0,0) scale(1)} 25%{transform:translate(40px,-30px) scale(1.05)}
+  50%{transform:translate(-20px,40px) scale(.95)} 100%{transform:translate(0,0) scale(1)}
+}
+@keyframes gridScroll { to { transform:translateY(56px) } }
