@@ -1,27 +1,71 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./components/Login";
 import Inscription from "./components/Inscription";
 import ListeTrajets from "./components/ListeTrajets";
 import PublierTrajet from "./components/PublierTrajet";
 import Wallet from "./components/Wallet";
-import Login from "./components/Login";
 import MesTrajets from "./components/MesTrajets";
-import Navbar from "./components/Navbar";
 import MesReservations from "./components/MesReservations";
+import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute"; // <-- Import dyal l'3essas 👮‍♂️
 
 function App() {
   return (
     <Router>
-      {/* 2. 7etna Navbar Hna bach t-ban f ga3 l'pages */}
-      <Navbar /> 
-      
+      <Navbar />
+
       <Routes>
+        {/* Pages Publiques (Ay wa7d y-qder y-dkhol lihom) */}
         <Route path="/" element={<Login />} />
         <Route path="/inscription" element={<Inscription />} />
-        <Route path="/trajets" element={<ListeTrajets />} />
-        <Route path="/publier" element={<PublierTrajet />} />
-        <Route path="/wallet" element={<Wallet />} />
-        <Route path="/mes-trajets" element={<MesTrajets />} />
-        <Route path="/mes-reservations" element={<MesReservations />} /> 
+
+        {/* Pages Protégées (Khass t-koun m-connecté) */}
+        <Route
+          path="/trajets"
+          element={
+            <ProtectedRoute>
+              <ListeTrajets />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/wallet"
+          element={
+            <ProtectedRoute>
+              <Wallet />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Pages dyal l'CONDUCTEUR Bo7do! */}
+        <Route
+          path="/publier"
+          element={
+            <ProtectedRoute roleRequis="conducteur">
+              <PublierTrajet />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/mes-trajets"
+          element={
+            <ProtectedRoute roleRequis="conducteur">
+              <MesTrajets />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Pages dyal l'PASSAGER (Étudiant) Bo7do! */}
+        <Route
+          path="/mes-reservations"
+          element={
+            <ProtectedRoute roleRequis="passager">
+              <MesReservations />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

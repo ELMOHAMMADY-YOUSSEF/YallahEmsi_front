@@ -100,7 +100,6 @@ export default function MesTrajets() {
                     <p style={{ margin: 0, fontSize: 16, fontWeight: 800, color: "#fff" }}>
                       {demande.passager?.nom} {demande.passager?.prenom}
                     </p>
-                    {/* Hna sta3mlna placesReservees kima kayna f l'Entity dyalk */}
                     <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "rgba(255,255,255,.6)" }}>
                       Bgha <span style={{ color: "#4ade80", fontWeight: 700 }}>{demande.placesReservees} blassa</span> f trajet {demande.trajet?.hay?.nom}
                     </p>
@@ -124,35 +123,61 @@ export default function MesTrajets() {
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}>
-            {mesTrajets.map(trajet => (
-              <div key={trajet.id} style={cardStyle}>
-                
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <span style={{ background: trajet.placesDisponibles === 0 ? "rgba(239,68,68,.15)" : "rgba(34,197,94,.12)", color: trajet.placesDisponibles === 0 ? "#ef4444" : "#4ade80", border: `0.5px solid ${trajet.placesDisponibles === 0 ? "rgba(239,68,68,.3)" : "rgba(34,197,94,.25)"}`, padding: "4px 10px", borderRadius: 8, fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>
-                    {trajet.placesDisponibles === 0 ? 'COMPLET' : 'EN COURS'}
-                  </span>
-                  <div style={{ textAlign: "right" }}>
-                    <p style={{ fontSize: 24, fontWeight: 900, color: "#4ade80", margin: 0 }}>{trajet.prixParPlace} <span style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,.3)" }}>MAD</span></p>
+            {mesTrajets.map(trajet => {
+              
+              // LOGIQUE Jdida dyal l'weqt (Wach fat awla mzl)
+              const dateTrajet = new Date(trajet.dateHeureDepart);
+              const dateDaba = new Date();
+              const isTermine = dateTrajet < dateDaba; // Wach daz lweqt?
+
+              let badgeStyle = {};
+              let badgeText = "";
+
+              if (isTermine) {
+                badgeStyle = { bg: "rgba(255,255,255,.1)", text: "rgba(255,255,255,.5)", border: "rgba(255,255,255,.2)" };
+                badgeText = "TERMINÉ";
+              } else if (trajet.placesDisponibles === 0) {
+                badgeStyle = { bg: "rgba(239,68,68,.15)", text: "#ef4444", border: "rgba(239,68,68,.3)" };
+                badgeText = "COMPLET";
+              } else {
+                badgeStyle = { bg: "rgba(34,197,94,.12)", text: "#4ade80", border: "rgba(34,197,94,.25)" };
+                badgeText = "EN COURS";
+              }
+
+              return (
+                <div key={trajet.id} style={cardStyle}>
+                  
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <span style={{ 
+                      background: badgeStyle.bg, color: badgeStyle.text, 
+                      border: `0.5px solid ${badgeStyle.border}`, 
+                      padding: "4px 10px", borderRadius: 8, fontSize: 11, fontWeight: 700, textTransform: "uppercase" 
+                    }}>
+                      {badgeText}
+                    </span>
+                    <div style={{ textAlign: "right", opacity: isTermine ? 0.5 : 1 }}>
+                      <p style={{ fontSize: 24, fontWeight: 900, color: "#4ade80", margin: 0 }}>{trajet.prixParPlace} <span style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,.3)" }}>MAD</span></p>
+                    </div>
                   </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px", opacity: isTermine ? 0.5 : 1 }}>
+                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> Mn: <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.hay?.nom}</span></div>
+                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> L': <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.campus?.nom}</span></div>
+                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🕒</span> {new Date(trajet.dateHeureDepart).toLocaleString('fr-FR')}</div>
+                  </div>
+
+                  <div style={{ height: "0.5px", background: "rgba(255,255,255,.1)", margin: "8px 0" }} />
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", opacity: isTermine ? 0.5 : 1 }}>
+                     <div style={{ textAlign: "center", width: "100%" }}>
+                      <p style={{ color: "rgba(255,255,255,.4)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", margin: "0 0 4px 0" }}>Blays khawyin</p>
+                      <p style={{ color: "#fff", fontSize: 20, fontWeight: 800, margin: 0 }}>{trajet.placesDisponibles}</p>
+                     </div>
+                  </div>
+
                 </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px" }}>
-                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> Mn: <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.hay?.nom}</span></div>
-                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> L': <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.campus?.nom}</span></div>
-                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🕒</span> {new Date(trajet.dateHeureDepart).toLocaleString('fr-FR')}</div>
-                </div>
-
-                <div style={{ height: "0.5px", background: "rgba(255,255,255,.1)", margin: "8px 0" }} />
-
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                   <div style={{ textAlign: "center", width: "100%" }}>
-                    <p style={{ color: "rgba(255,255,255,.4)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", margin: "0 0 4px 0" }}>Blays khawyin</p>
-                    <p style={{ color: "#fff", fontSize: 20, fontWeight: 800, margin: 0 }}>{trajet.placesDisponibles}</p>
-                   </div>
-                </div>
-
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

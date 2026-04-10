@@ -126,7 +126,7 @@ export default function Inscription() {
 
         <p className="text-center mt-5 text-xs text-white/30">
           Déjà un compte ?{" "}
-          <a href="#" className="text-green-400 font-medium hover:opacity-70">
+          <a href="/" className="text-green-400 font-medium hover:opacity-70">
             Se connecter
           </a>
         </p>
