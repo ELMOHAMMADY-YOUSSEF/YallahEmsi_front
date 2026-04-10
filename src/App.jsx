@@ -5,17 +5,23 @@ import PublierTrajet from "./components/PublierTrajet";
 import Wallet from "./components/Wallet";
 import Login from "./components/Login";
 import MesTrajets from "./components/MesTrajets";
+import Navbar from "./components/Navbar";
+import MesReservations from "./components/MesReservations";
 
 function App() {
   return (
     <Router>
+      {/* 2. 7etna Navbar Hna bach t-ban f ga3 l'pages */}
+      <Navbar /> 
+      
       <Routes>
-        <Route path="/" element={<Login />} /> {/* <--- L'Login howa l'Bab */}
+        <Route path="/" element={<Login />} />
         <Route path="/inscription" element={<Inscription />} />
         <Route path="/trajets" element={<ListeTrajets />} />
         <Route path="/publier" element={<PublierTrajet />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/mes-trajets" element={<MesTrajets />} />
+        <Route path="/mes-reservations" element={<MesReservations />} /> 
       </Routes>
     </Router>
   );
