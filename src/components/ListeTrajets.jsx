@@ -8,7 +8,11 @@ export default function ListeTrajets() {
   const [trajets, setTrajets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erreur, setErreur] = useState("");
-  const [recherche, setRecherche] = useState("");
+  
+  // 1. ZIDNA LES STATES DYAL L'FILTRE JDID HNA:
+  const [filtreVille, setFiltreVille] = useState("");
+  const [filtreCampus, setFiltreCampus] = useState("");
+  const [filtreHay, setFiltreHay] = useState("");
 
   const currentUser = JSON.parse(localStorage.getItem("user"));
   const isConducteur = currentUser?.role === "conducteur";
@@ -59,19 +63,24 @@ export default function ListeTrajets() {
 
   const fermerModal = () => setModal({ ...modal, isOpen: false });
 
-  // Filtrage bl barre de recherche
+  // 2. L'MOTEUR DYAL L'RECHERCHE (Filtre Avancé)
   const trajetsFiltres = trajets.filter(trajet => {
-    const motCle = recherche.toLowerCase();
     const hayNom = trajet.hay?.nom?.toLowerCase() || "";
     const campusNom = trajet.campus?.nom?.toLowerCase() || "";
-    return hayNom.includes(motCle) || campusNom.includes(motCle);
+    
+    // Yqder ykteb mdina w n-qelbou 3liha f hay awla campus (bima anana baqin ma-zdnach table Ville)
+    const matchHay = hayNom.includes(filtreHay.toLowerCase());
+    const matchCampus = campusNom.includes(filtreCampus.toLowerCase());
+    const matchVille = hayNom.includes(filtreVille.toLowerCase()) || campusNom.includes(filtreVille.toLowerCase()); 
+
+    return matchHay && matchCampus && matchVille;
   });
 
-  // --- STYLES INLINE (Bhal d-design dyalk) ---
+  // --- STYLES INLINE ---
   const inputStyle = {
-    width: "100%", maxWidth: "300px", background: "rgba(255,255,255,.04)",
+    width: "100%", background: "rgba(255,255,255,.04)",
     border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 12,
-    padding: "11px 14px", color: "#fff", fontFamily: "Outfit,sans-serif",
+    padding: "11px 14px 11px 42px", color: "#fff", fontFamily: "Outfit,sans-serif", // Zdt paddingLeft l'icons
     fontSize: 13, outline: "none", transition: "all .2s"
   };
 
@@ -105,29 +114,68 @@ export default function ListeTrajets() {
       
       <div style={{ position: "relative", zIndex: 10, maxWidth: 1000, margin: "0 auto" }}>
         
-        {/* HEADER */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
-          <div>
-            <h1 style={{ fontSize: 32, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.5px" }}>
-              Trajets <span style={{ color: "#4ade80" }}>Disponibles</span> 
-            </h1>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,.4)", marginTop: 4 }}>Chof m3amen ghadi t-mchi l'EMSI lyoum</p>
+        {/* HEADER & FILTRES */}
+        <div style={{ marginBottom: "40px" }}>
+          
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "20px" }}>
+            <div>
+              <h1 style={{ fontSize: 32, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.5px" }}>
+                Trajets <span style={{ color: "#4ade80" }}>Disponibles</span> 
+              </h1>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,.4)", marginTop: 4 }}>Chof m3amen ghadi t-mchi l'EMSI lyoum</p>
+            </div>
+
+            {isConducteur && (
+              <button onClick={() => navigate("/publier")} style={btnPrimary} onMouseOver={e => e.currentTarget.style.transform="translateY(-2px)"} onMouseOut={e => e.currentTarget.style.transform="translateY(0)"}>
+                + Publier Trajet
+              </button>
+            )}
           </div>
 
-          {isConducteur ? (
-            <button onClick={() => navigate("/publier")} style={btnPrimary} onMouseOver={e => e.currentTarget.style.transform="translateY(-2px)"} onMouseOut={e => e.currentTarget.style.transform="translateY(0)"}>
-              + Publier Trajet
-            </button>
-          ) : (
-            <input 
-              type="text" 
-              placeholder="🔍 Qleb 3la Hay awla Campus..." 
-              value={recherche}
-              onChange={(e) => setRecherche(e.target.value)}
-              style={inputStyle}
-              onFocus={e => {e.currentTarget.style.borderColor = "rgba(74,222,128,.5)"; e.currentTarget.style.background = "rgba(74,222,128,.06)";}}
-              onBlur={e => {e.currentTarget.style.borderColor = "rgba(255,255,255,.1)"; e.currentTarget.style.background = "rgba(255,255,255,.04)";}}
-            />
+          {/* 3. L'BARRE DYAL L'FILTRES (Kat-ban ghir l'Passager) */}
+          {!isConducteur && (
+            <div style={{ display: "flex", gap: "16px", background: "rgba(255,255,255,.02)", padding: "20px", borderRadius: "20px", border: "0.5px solid rgba(255,255,255,.05)", flexWrap: "wrap" }}>
+              
+              <div style={{ flex: "1 1 200px", position: "relative" }}>
+                <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🌍</span>
+                <input 
+                  type="text" 
+                  placeholder="Ville..." 
+                  value={filtreVille} 
+                  onChange={(e) => setFiltreVille(e.target.value)} 
+                  style={inputStyle}
+                  onFocus={e => {e.currentTarget.style.borderColor = "rgba(74,222,128,.5)"; e.currentTarget.style.background = "rgba(74,222,128,.06)";}}
+                  onBlur={e => {e.currentTarget.style.borderColor = "rgba(255,255,255,.1)"; e.currentTarget.style.background = "rgba(255,255,255,.04)";}}
+                />
+              </div>
+
+              <div style={{ flex: "1 1 200px", position: "relative" }}>
+                <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🏘️</span>
+                <input 
+                  type="text" 
+                  placeholder="Hay (ex: Maarif)..." 
+                  value={filtreHay} 
+                  onChange={(e) => setFiltreHay(e.target.value)} 
+                  style={inputStyle}
+                  onFocus={e => {e.currentTarget.style.borderColor = "rgba(74,222,128,.5)"; e.currentTarget.style.background = "rgba(74,222,128,.06)";}}
+                  onBlur={e => {e.currentTarget.style.borderColor = "rgba(255,255,255,.1)"; e.currentTarget.style.background = "rgba(255,255,255,.04)";}}
+                />
+              </div>
+
+              <div style={{ flex: "1 1 200px", position: "relative" }}>
+                <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🏫</span>
+                <input 
+                  type="text" 
+                  placeholder="Campus (ex: Centre)..." 
+                  value={filtreCampus} 
+                  onChange={(e) => setFiltreCampus(e.target.value)} 
+                  style={inputStyle}
+                  onFocus={e => {e.currentTarget.style.borderColor = "rgba(74,222,128,.5)"; e.currentTarget.style.background = "rgba(74,222,128,.06)";}}
+                  onBlur={e => {e.currentTarget.style.borderColor = "rgba(255,255,255,.1)"; e.currentTarget.style.background = "rgba(255,255,255,.04)";}}
+                />
+              </div>
+
+            </div>
           )}
         </div>
 
@@ -188,7 +236,7 @@ export default function ListeTrajets() {
         </div>
       </div>
 
-      {/* MODAL DYAL RÉSERVATION B DESIGN DARK */}
+      {/* MODAL DYAL RÉSERVATION */}
       {modal.isOpen && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,.6)", backdropFilter: "blur(8px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
           <div style={{ background: "rgba(8,22,12,.95)", border: "0.5px solid rgba(74,222,128,.3)", borderRadius: 24, padding: 30, width: "100%", maxWidth: 360, textAlign: "center" }}>
