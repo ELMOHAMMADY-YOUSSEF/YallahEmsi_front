@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import AnimatedBackground from "./AnimatedBackground"; // Import dyalk l'asli
+import AnimatedBackground from "./AnimatedBackground";
 
 export default function ListeTrajets() {
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ export default function ListeTrajets() {
   const inputStyle = {
     width: "100%", background: "rgba(255,255,255,.04)",
     border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 12,
-    padding: "11px 14px 11px 42px", color: "#fff", fontFamily: "Outfit,sans-serif", // Zdt paddingLeft l'icons
+    padding: "11px 14px 11px 42px", color: "#fff", fontFamily: "Outfit,sans-serif",
     fontSize: 13, outline: "none", transition: "all .2s"
   };
 
@@ -214,8 +214,13 @@ export default function ListeTrajets() {
                       {trajet.conducteur?.nom?.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#fff" }}>{trajet.conducteur?.nom}</p>
-                      <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,.4)" }}>{trajet.voiture?.marque} {trajet.voiture?.modele}</p>
+                      {/* ZEDNA S-SMIYA KAMLA W N-NMRA HNA 👇 */}
+                      <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#fff" }}>
+                        {trajet.conducteur?.nom} {trajet.conducteur?.prenom}
+                      </p>
+                      <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,.4)" }}>
+                        🚗 {trajet.voiture?.marque} {trajet.voiture?.modele} &nbsp; | &nbsp; <span style={{ color: "#4ade80" }}>📞 {trajet.conducteur?.telephone || "N/A"}</span>
+                      </p>
                     </div>
                   </div>
                   

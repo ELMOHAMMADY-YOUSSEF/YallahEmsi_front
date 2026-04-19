@@ -1,176 +1,115 @@
 import { useState } from "react";
 import axios from "axios";
-import logo from "../assets/images/yallahemsi_logo.png"; // ← mets le logo ici
-import emsiPhoto from "../assets/images/background_emsi.webp";
+import { useNavigate, Link } from "react-router-dom";
+import AnimatedBackground from "./AnimatedBackground";
 
 export default function Inscription() {
-  const [formData, setFormData] = useState({
-    nom: "", prenom: "", email: "",
-    motDePasse: "", telephone: "", cne: "",
-  });
+  const navigate = useNavigate();
+  
+  const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [cne, setCne] = useState(""); 
+  const [telephone, setTelephone] = useState(""); 
+  const [role, setRole] = useState("etudiant");
+
+  // ZEDNA MATRICULE W PLACES HNA 👇
+  const [marque, setMarque] = useState("");
+  const [modele, setModele] = useState("");
+  const [matricule, setMatricule] = useState(""); 
+  const [places, setPlaces] = useState(4); 
+
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false);
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    
+    const payload = {
+      nom: nom,
+      prenom: prenom,
+      email: email,
+      motDePasse: password,
+      cne: cne, 
+      telephone: telephone, 
+      role: role,
+      // Siftna l'm3loumat dyal l'Voiture kamlin!
+      voiture: role === "conducteur" ? { marque: marque, modele: modele, matricule: matricule, placesTotales: places } : null
+    };
+
     try {
-      const response = await axios.post(
-        "http://localhost:8081/api/utilisateurs/inscription", formData
-      );
-      setMessage(response.data);
-      setIsError(response.data.includes("Erreur"));
-    } catch {
-      setMessage("Mochkil f l'itissal m3a l'serveur!");
-      setIsError(true);
+      await axios.post("http://localhost:8081/api/utilisateurs/inscription", payload);
+      setMessage("✅ Compte t-creeya b naja7!");
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (error) {
+      setMessage("❌ Erreur f l'inscription. T2akked mn l'm3loumat.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const inputStyle = {
+    width: "100%", background: "rgba(255,255,255,.04)", border: "0.5px solid rgba(255,255,255,.1)", 
+    borderRadius: 12, padding: "14px 16px", color: "#fff", fontFamily: "Outfit,sans-serif", 
+    fontSize: 14, outline: "none", transition: "all .2s", marginBottom: 15
+  };
+
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{
-        backgroundImage: `url(${emsiPhoto})`, // ← photo dyal EMSI
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      {/* Dark green overlay */}
-      <div className="fixed inset-0 bg-gradient-to-br from-green-950/80 via-black/60 to-green-900/50 z-0" />
+    <div style={{ position: "relative", minHeight: "100vh", background: "#0a1a0f", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem 1rem" }}>
+      <AnimatedBackground />
 
-      {/* Grid lines */}
-      <div
-        className="fixed inset-0 z-0 opacity-10"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(61,184,113,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(61,184,113,0.4) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
+      <div style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: 450, background: "rgba(8,22,12,.8)", border: "0.5px solid rgba(74,222,128,.15)", borderRadius: 24, padding: "40px", backdropFilter: "blur(24px)" }}>
+        
+        <h2 style={{ fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 8, textAlign: "center" }}>Rejoindre <span style={{ color: "#4ade80" }}>Yallah EMSI</span></h2>
 
-      {/* Card */}
-      <div
-        className="relative z-10 w-full max-w-md rounded-3xl p-10"
-        style={{
-          background: "rgba(10, 28, 16, 0.72)",
-          backdropFilter: "blur(28px)",
-          border: "1px solid rgba(61,184,113,0.22)",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.55), 0 0 80px rgba(61,184,113,0.08)",
-        }}
-      >
-        {/* Header with logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="flex items-center gap-4 mb-3">
-            <img
-              src={logo}
-              alt="Yallah EMSI"
-              className="w-16 h-16 object-contain drop-shadow-[0_0_12px_rgba(61,184,113,0.6)]"
-            />
-            <div>
-              <h1
-                className="text-3xl font-extrabold text-white tracking-tight"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
-              >
-                <span className="text-green-400">Yallah</span> EMSI
-              </h1>
-              <p className="text-xs text-green-400 tracking-widest uppercase opacity-80 mt-0.5">
-                Covoiturage Étudiant
-              </p>
-            </div>
-          </div>
-          <p className="text-sm text-white/50 font-light">
-            Créez votre compte et rejoignez la communauté 🚗
-          </p>
-        </div>
-
-        <div className="h-px bg-gradient-to-r from-transparent via-green-500/30 to-transparent mb-7" />
-
-        {/* Message */}
         {message && (
-          <div className={`p-3 mb-5 rounded-xl text-center text-sm font-medium border ${
-            isError
-              ? "bg-red-500/10 text-red-300 border-red-500/20"
-              : "bg-green-500/10 text-green-300 border-green-500/20"
-          }`}>
+          <div style={{ background: message.includes("✅") ? "rgba(34,197,94,.1)" : "rgba(239,68,68,.1)", color: message.includes("✅") ? "#4ade80" : "#ef4444", padding: 16, borderRadius: 12, marginBottom: 20, textAlign: "center", fontWeight: 700 }}>
             {message}
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <Input name="nom" placeholder="Nom" onChange={handleChange} />
-            <Input name="prenom" placeholder="Prénom" onChange={handleChange} />
+        <form onSubmit={handleRegister}>
+          <div style={{ display: "flex", gap: 10 }}>
+            <input type="text" placeholder="Nom..." value={nom} onChange={(e) => setNom(e.target.value)} style={inputStyle} required />
+            <input type="text" placeholder="Prénom..." value={prenom} onChange={(e) => setPrenom(e.target.value)} style={inputStyle} required />
           </div>
-          <Input name="email" type="email" placeholder="Email (@emsi.ma)" onChange={handleChange} />
-          <Input name="motDePasse" type="password" placeholder="Mot de passe" onChange={handleChange} />
-          <div className="grid grid-cols-2 gap-3">
-            <Input name="telephone" placeholder="Téléphone" onChange={handleChange} required={false} />
-            <Input name="cne" placeholder="CNE (ex: R123...)" onChange={handleChange} />
-          </div>
+          
+          <input type="email" placeholder="Email (@emsi.ma)..." value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} required />
+          <input type="password" placeholder="Mot de passe..." value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} required />
+          <input type="text" placeholder="CNE (Code Massar)..." value={cne} onChange={(e) => setCne(e.target.value)} style={inputStyle} required />
 
-          <button
-            type="submit"
-            className="w-full mt-2 py-4 rounded-2xl font-bold text-white text-base transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
-            style={{
-              background: "linear-gradient(135deg, #3db871 0%, #2a8a52 100%)",
-              boxShadow: "0 4px 24px rgba(61,184,113,0.35)",
-              fontFamily: "'Outfit', sans-serif",
-            }}
-          >
-            N-ssjel Rassi →
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>Nta Chkon?</label>
+          <select value={role} onChange={(e) => setRole(e.target.value)} style={inputStyle}>
+            <option value="etudiant" style={{ background: "#0a1a0f" }}>🎓 Passager (Étudiant)</option>
+            <option value="conducteur" style={{ background: "#0a1a0f" }}>🚗 Conducteur (Moul Tomobil)</option>
+          </select>
+
+          {role === "conducteur" && (
+            <div style={{ background: "rgba(74,222,128,.05)", padding: "20px", borderRadius: "16px", border: "0.5px dashed rgba(74,222,128,.3)", marginBottom: 15 }}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#4ade80", marginBottom: 10, textTransform: "uppercase" }}>📞 N-Nmra w d-Tomobil</label>
+              <input type="tel" placeholder="Numéro de Téléphone (ex: 06...)" value={telephone} onChange={(e) => setTelephone(e.target.value)} style={inputStyle} required={role === "conducteur"} />
+              
+              <div style={{ display: "flex", gap: 10 }}>
+                <input type="text" placeholder="Marque (Dacia)" value={marque} onChange={(e) => setMarque(e.target.value)} style={inputStyle} required={role === "conducteur"} />
+                <input type="text" placeholder="Modèle (Logan)" value={modele} onChange={(e) => setModele(e.target.value)} style={inputStyle} required={role === "conducteur"} />
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <input type="text" placeholder="Matricule (12345-A-1)" value={matricule} onChange={(e) => setMatricule(e.target.value)} style={{...inputStyle, marginBottom: 0}} required={role === "conducteur"} />
+                <input type="number" placeholder="Places (ex: 4)" value={places} onChange={(e) => setPlaces(e.target.value)} style={{...inputStyle, marginBottom: 0}} required={role === "conducteur"} />
+              </div>
+            </div>
+          )}
+
+          <button type="submit" disabled={loading} style={{ width: "100%", padding: 16, background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "#fff", fontSize: 16, fontWeight: 800, border: "none", borderRadius: 12, cursor: "pointer", marginTop: 10 }}>
+            {loading ? "Kan-sajlou l'Compte..." : "S'inscrire"}
           </button>
         </form>
-
-        <p className="text-center mt-5 text-xs text-white/30">
-          Déjà un compte ?{" "}
-          <a href="/" className="text-green-400 font-medium hover:opacity-70">
-            Se connecter
-          </a>
+        <p style={{ textAlign: "center", marginTop: 20, color: "rgba(255,255,255,.5)", fontSize: 14 }}>
+          Déjà 3ndk compte? <Link to="/login" style={{ color: "#4ade80", textDecoration: "none", fontWeight: 700 }}>Dkhol hna</Link>
         </p>
-
-        <div className="flex items-center justify-center gap-2 mt-6 pt-5 border-t border-white/5 text-[10px] text-white/20 uppercase tracking-widest">
-          <span className="w-1 h-1 rounded-full bg-green-500 opacity-60" />
-          EMSI · École Marocaine des Sciences de l'Ingénieur
-          <span className="w-1 h-1 rounded-full bg-green-500 opacity-60" />
-        </div>
       </div>
     </div>
-  );
-}
-
-// Composant input réutilisable
-function Input({ name, type = "text", placeholder, onChange, required = true }) {
-  return (
-    <input
-      type={type}
-      name={name}
-      placeholder={placeholder}
-      onChange={onChange}
-      required={required}
-      style={{
-        width: "100%",
-        background: "rgba(255,255,255,0.05)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: "12px",
-        padding: "13px 16px",
-        color: "white",
-        fontSize: "14px",
-        outline: "none",
-        transition: "all 0.25s",
-      }}
-      onFocus={e => {
-        e.target.style.borderColor = "rgba(61,184,113,0.55)";
-        e.target.style.background = "rgba(61,184,113,0.07)";
-        e.target.style.boxShadow = "0 0 0 3px rgba(61,184,113,0.12)";
-      }}
-      onBlur={e => {
-        e.target.style.borderColor = "rgba(255,255,255,0.1)";
-        e.target.style.background = "rgba(255,255,255,0.05)";
-        e.target.style.boxShadow = "none";
-      }}
-    />
   );
 }
