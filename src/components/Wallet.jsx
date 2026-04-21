@@ -64,7 +64,7 @@ export default function Wallet() {
           <div className="flex justify-between items-end">
             <div>
               <p className="text-xs text-green-200 uppercase tracking-widest">Utilisateur</p>
-              <p className="font-bold tracking-widest">Bennani Sara (Passagère)</p>
+              <p className="font-bold tracking-widest">{currentUser.nom} {currentUser.prenom}(Passagère)</p>
             </div>
             <div className="text-4xl opacity-80">🚙</div>
           </div>

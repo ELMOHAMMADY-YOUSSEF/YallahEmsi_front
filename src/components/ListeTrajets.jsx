@@ -9,7 +9,6 @@ export default function ListeTrajets() {
   const [loading, setLoading] = useState(true);
   const [erreur, setErreur] = useState("");
   
-  // 1. ZIDNA LES STATES DYAL L'FILTRE JDID HNA:
   const [filtreVille, setFiltreVille] = useState("");
   const [filtreCampus, setFiltreCampus] = useState("");
   const [filtreHay, setFiltreHay] = useState("");
@@ -63,15 +62,19 @@ export default function ListeTrajets() {
 
   const fermerModal = () => setModal({ ...modal, isOpen: false });
 
-  // 2. L'MOTEUR DYAL L'RECHERCHE (Filtre Avancé)
+  // 2. L'MOTEUR DYAL L'RECHERCHE (M-qad 100%) 🚀
   const trajetsFiltres = trajets.filter(trajet => {
-    const hayNom = trajet.hay?.nom?.toLowerCase() || "";
-    const campusNom = trajet.campus?.nom?.toLowerCase() || "";
+    // Kan-jbdou l'smiyat, w kan-diro sécurité (|| "") bach ila kan null ma-y-tferge3ch l'code
+    const hayNom = (trajet.hay?.nom || "").toLowerCase();
+    const campusNom = (trajet.campus?.nom || "").toLowerCase();
     
-    // Yqder ykteb mdina w n-qelbou 3liha f hay awla campus (bima anana baqin ma-zdnach table Ville)
+    // Kan-jbdou l'Ville mn l'Hay (w ila l'Hay ma fihch ville, n-jbdouha mn Campus)
+    const villeNom = (trajet.hay?.ville?.nom || trajet.campus?.ville?.nom || "").toLowerCase();
+
+    // Kan-qarnou l'ktaba li kteb l'utilisateur f l'Inputs m3a dakchi li jbdna
     const matchHay = hayNom.includes(filtreHay.toLowerCase());
     const matchCampus = campusNom.includes(filtreCampus.toLowerCase());
-    const matchVille = hayNom.includes(filtreVille.toLowerCase()) || campusNom.includes(filtreVille.toLowerCase()); 
+    const matchVille = villeNom.includes(filtreVille.toLowerCase()); 
 
     return matchHay && matchCampus && matchVille;
   });
@@ -201,9 +204,16 @@ export default function ListeTrajets() {
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px" }}>
-                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> Mn: <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.hay?.nom}</span></div>
-                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> L': <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.campus?.nom}</span></div>
-                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🕒</span> {new Date(trajet.dateHeureDepart).toLocaleString('fr-FR')}</div>
+                  {/* HNA T-T2AKKADNA BLLI KAN-AFFICHIW L'VILLE */}
+                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}>
+                    <span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> Mn: <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.hay?.ville?.nom} - {trajet.hay?.nom}</span>
+                  </div>
+                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}>
+                    <span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> L': <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.campus?.nom}</span>
+                  </div>
+                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}>
+                    <span style={{ color: "#4ade80", marginRight: 8 }}>🕒</span> {new Date(trajet.dateHeureDepart).toLocaleString('fr-FR')}
+                  </div>
                 </div>
 
                 <div style={{ height: "0.5px", background: "rgba(255,255,255,.1)", margin: "8px 0" }} />
@@ -211,10 +221,9 @@ export default function ListeTrajets() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <div style={{ width: 36, height: 36, borderRadius: 12, background: "rgba(74,222,128,.15)", border: "0.5px solid rgba(74,222,128,.3)", display: "flex", alignItems: "center", justifyContent: "center", color: "#4ade80", fontWeight: 800, fontSize: 16 }}>
-                      {trajet.conducteur?.nom?.charAt(0).toUpperCase()}
+                      {trajet.conducteur?.nom?.charAt(0).toUpperCase() || "?"}
                     </div>
                     <div>
-                      {/* ZEDNA S-SMIYA KAMLA W N-NMRA HNA 👇 */}
                       <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#fff" }}>
                         {trajet.conducteur?.nom} {trajet.conducteur?.prenom}
                       </p>
