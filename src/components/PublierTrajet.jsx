@@ -61,10 +61,10 @@ export default function PublierTrajet() {
       };
 
       await axios.post("http://localhost:8081/api/trajets/publier", payload);
-      setMessage("✅ Trajet publié b naja7!");
+      setMessage("✅ Trajet publié avec succès !");
       setTimeout(() => navigate("/mes-trajets"), 2000);
     } catch (err) {
-      setMessage("❌ Erreur f publication dyal trajet.");
+      setMessage("❌ Erreur lors de la publication du trajet.");
     } finally {
       setLoading(false);
     }
@@ -84,7 +84,7 @@ export default function PublierTrajet() {
       <div style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: 600, background: "rgba(8,22,12,.8)", border: "0.5px solid rgba(74,222,128,.15)", borderRadius: 24, padding: "40px", backdropFilter: "blur(24px)" }}>
         
         <h2 style={{ fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 8 }}>Publier un <span style={{ color: "#4ade80" }}>Trajet</span> 🚗</h2>
-        <p style={{ color: "rgba(255,255,255,.5)", marginBottom: 30 }}>3emmer l'm3loumat bach l'étudiants y-qelbou 3lik.</p>
+        <p style={{ color: "rgba(255,255,255,.5)", marginBottom: 30 }}>Remplissez les informations pour que les étudiants puissent vous trouver.</p>
 
         {message && (
           <div style={{ background: message.includes("✅") ? "rgba(34,197,94,.1)" : "rgba(239,68,68,.1)", color: message.includes("✅") ? "#4ade80" : "#ef4444", padding: 16, borderRadius: 12, marginBottom: 20, textAlign: "center", fontWeight: 700 }}>
@@ -98,8 +98,8 @@ export default function PublierTrajet() {
             <div style={{ flex: 1 }}>
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>Type de Trajet</label>
               <select value={typeTrajet} onChange={(e) => setTypeTrajet(e.target.value)} style={inputStyle}>
-                <option value="aller" style={{ background: "#0a1a0f" }}>Aller (Hay ➡️ Campus)</option>
-                <option value="retour" style={{ background: "#0a1a0f" }}>Retour (Campus ➡️ Hay)</option>
+                <option value="aller" style={{ background: "#0a1a0f" }}>Aller (Quartier ➡️ Campus)</option>
+                <option value="retour" style={{ background: "#0a1a0f" }}>Retour (Campus ➡️ Quartier)</option>
               </select>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function PublierTrajet() {
           <div>
             <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>🌍 Ville</label>
             <select value={selectedVille} onChange={(e) => setSelectedVille(e.target.value)} style={inputStyle} required>
-              <option value="" style={{ background: "#0a1a0f" }}>-- Khtar l'Ville --</option>
+              <option value="" style={{ background: "#0a1a0f" }}>-- Choisissez la Ville --</option>
               {villes.map(v => (
                 <option key={v.id} value={v.id} style={{ background: "#0a1a0f" }}>{v.nom}</option>
               ))}
@@ -120,10 +120,10 @@ export default function PublierTrajet() {
             <div style={{ flex: 1 }}>
               {/* L'KTABA KAT-TBDEL */}
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>
-                {typeTrajet === "aller" ? "📍 Mn (Hay)" : "📍 L' (Hay)"}
+                {typeTrajet === "aller" ? "📍 De (Quartier)" : "📍 Vers (Quartier)"}
               </label>
               <select value={selectedHay} onChange={(e) => setSelectedHay(e.target.value)} style={inputStyle} required disabled={!selectedVille}>
-                <option value="" style={{ background: "#0a1a0f" }}>{selectedVille ? "-- Khtar l'Hay --" : "Khtar Ville 9bel"}</option>
+                <option value="" style={{ background: "#0a1a0f" }}>{selectedVille ? "-- Choisissez le Quartier --" : "Choisissez d'abord une ville"}</option>
                 {hays.map(h => (
                   <option key={h.id} value={h.id} style={{ background: "#0a1a0f" }}>{h.nom}</option>
                 ))}
@@ -133,10 +133,10 @@ export default function PublierTrajet() {
             <div style={{ flex: 1 }}>
               {/* L'KTABA KAT-TBDEL */}
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>
-                {typeTrajet === "aller" ? "🏫 L' (Campus)" : "🏫 Mn (Campus)"}
+                {typeTrajet === "aller" ? "🏫 Vers (Campus)" : "🏫 De (Campus)"}
               </label>
               <select value={selectedCampus} onChange={(e) => setSelectedCampus(e.target.value)} style={inputStyle} required disabled={!selectedVille}>
-                <option value="" style={{ background: "#0a1a0f" }}>{selectedVille ? "-- Khtar Campus --" : "Khtar Ville 9bel"}</option>
+                <option value="" style={{ background: "#0a1a0f" }}>{selectedVille ? "-- Choisissez le Campus --" : "Choisissez d'abord une ville"}</option>
                 {campusList.map(c => (
                   <option key={c.id} value={c.id} style={{ background: "#0a1a0f" }}>{c.nom}</option>
                 ))}
@@ -157,12 +157,12 @@ export default function PublierTrajet() {
           </div>
 
           <div>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>🕒 Date w l'Weqt</label>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>🕒 Date et Heure</label>
             <input type="datetime-local" value={dateDepart} onChange={(e) => setDateDepart(e.target.value)} style={{...inputStyle, colorScheme: "dark"}} required />
           </div>
 
           <button type="submit" disabled={loading} style={{ width: "100%", padding: 16, background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "#fff", fontSize: 16, fontWeight: 800, border: "none", borderRadius: 12, cursor: "pointer", marginTop: 10, boxShadow: "0 4px 20px rgba(34,197,94,.25)", transition: "all .2s", opacity: loading ? 0.7 : 1 }}>
-            {loading ? "Kan-sajlou l'Annonce..." : "🚀 Publier l'Trajet"}
+            {loading ? "Publication en cours..." : "🚀 Publier le Trajet"}
           </button>
 
         </form>

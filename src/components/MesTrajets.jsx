@@ -20,7 +20,7 @@ export default function MesTrajets() {
       setMesTrajets(resTrajets.data);
       setDemandes(resDemandes.data);
     } catch (error) {
-      console.error("Mochkil bach n-jibou data", error);
+      console.error("Erreur lors de la récupération des données", error);
     }
     setLoading(false);
   };
@@ -38,7 +38,7 @@ export default function MesTrajets() {
     try {
       await axios.post(`http://localhost:8081/api/reservations/accepter/${reservationId}`);
       fetchData(); // N-jibou data jdida bach l'blays y-tnqssou
-    } catch (err) { alert("Erreur f l'acceptation"); }
+    } catch (err) { alert("Erreur lors de l'acceptation"); }
   };
 
   // Fonction bach y-Refuser
@@ -46,7 +46,7 @@ export default function MesTrajets() {
     try {
       await axios.post(`http://localhost:8081/api/reservations/refuser/${reservationId}`);
       fetchData(); // N-jibou data jdida bach l'demande t-ghber
-    } catch (err) { alert("Erreur f refus"); }
+    } catch (err) { alert("Erreur lors du refus"); }
   };
 
   // --- STYLES INLINE (Dark Glassmorphism) ---
@@ -63,7 +63,7 @@ export default function MesTrajets() {
     display: "flex", justifyContent: "space-between", alignItems: "center"
   };
 
-  if (loading) return <div style={{ minHeight: "100vh", background: "#0a1a0f", display: "flex", justifyContent: "center", alignItems: "center", color: "#4ade80", fontSize: 20 }}>Kay-chargi...</div>;
+  if (loading) return <div style={{ minHeight: "100vh", background: "#0a1a0f", display: "flex", justifyContent: "center", alignItems: "center", color: "#4ade80", fontSize: 20 }}>Chargement...</div>;
 
   return (
     <div style={{ position: "relative", minHeight: "100vh", background: "#0a1a0f", padding: "3rem 2rem", fontFamily: "Outfit,sans-serif" }}>
@@ -77,7 +77,7 @@ export default function MesTrajets() {
             <h1 style={{ fontSize: 32, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.5px" }}>
               Mes <span style={{ color: "#4ade80" }}>Trajets</span> 🚙
             </h1>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,.4)", marginTop: 4 }}>Gérer les annonces w l'passagers dyalk a {currentUser.prenom}</p>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,.4)", marginTop: 4 }}>Gérez vos annonces et passagers, {currentUser.prenom}</p>
           </div>
 
           <Link to="/publier" style={{ padding: "10px 20px", background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 700, borderRadius: 12, boxShadow: "0 4px 20px rgba(34,197,94,.25)" }}>
@@ -101,7 +101,7 @@ export default function MesTrajets() {
                       {demande.passager?.nom} {demande.passager?.prenom}
                     </p>
                     <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "rgba(255,255,255,.6)" }}>
-                      Bgha <span style={{ color: "#4ade80", fontWeight: 700 }}>{demande.placesReservees} blassa</span> f trajet {demande.trajet?.hay?.nom}
+                      A demandé <span style={{ color: "#4ade80", fontWeight: 700 }}>{demande.placesReservees} place(s)</span> pour le trajet {demande.trajet?.hay?.nom}
                     </p>
                   </div>
                   <div style={{ display: "flex", gap: "10px" }}>
@@ -115,11 +115,11 @@ export default function MesTrajets() {
         )}
 
         {/* SECTION: MES TRAJETS PUBLIÉS */}
-        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: "20px" }}>Historique dyal les annonces</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: "20px" }}>Historique de vos annonces</h2>
         
         {mesTrajets.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0", background: "rgba(255,255,255,.02)", borderRadius: 24, border: "0.5px dashed rgba(255,255,255,.1)" }}>
-            <p style={{ color: "rgba(255,255,255,.4)", fontSize: 16 }}>Ba9i ma-publiyti 7ta trajet.</p>
+            <p style={{ color: "rgba(255,255,255,.4)", fontSize: 16 }}>Vous n'avez encore publié aucun trajet.</p>
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}>
@@ -161,8 +161,8 @@ export default function MesTrajets() {
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px", opacity: isTermine ? 0.5 : 1 }}>
-                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> Mn: <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.hay?.nom}</span></div>
-                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> L': <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.campus?.nom}</span></div>
+                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> De : <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.hay?.nom}</span></div>
+                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> Vers : <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.campus?.nom}</span></div>
                     <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🕒</span> {new Date(trajet.dateHeureDepart).toLocaleString('fr-FR')}</div>
                   </div>
 
@@ -170,7 +170,7 @@ export default function MesTrajets() {
 
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", opacity: isTermine ? 0.5 : 1 }}>
                      <div style={{ textAlign: "center", width: "100%" }}>
-                      <p style={{ color: "rgba(255,255,255,.4)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", margin: "0 0 4px 0" }}>Blays khawyin</p>
+                      <p style={{ color: "rgba(255,255,255,.4)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", margin: "0 0 4px 0" }}>Places disponibles</p>
                       <p style={{ color: "#fff", fontSize: 20, fontWeight: 800, margin: 0 }}>{trajet.placesDisponibles}</p>
                      </div>
                   </div>

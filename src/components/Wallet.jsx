@@ -11,13 +11,13 @@ export default function Wallet() {
   const utilisateurId = currentUser ? currentUser.id : null;
 
 
-  // Mli kat-t7el l'page, kan-jibou l'solde dyal Sara
+  // Mli kat-t7el l'page, kan-jibou l'solde
   const fetchSolde = async () => {
     try {
       const response = await axios.get(`http://localhost:8081/api/wallets/solde/${utilisateurId}`);
       setSolde(response.data);
     } catch (error) {
-      console.error("Mochkil bach n-jibou l'solde", error);
+      console.error("Erreur lors de la récupération du solde", error);
     }
   };
 
@@ -37,11 +37,12 @@ export default function Wallet() {
       setMontant(""); // Kan-khwiw l'input
       fetchSolde();   // Kan-jibou l'solde jdid bach y-tbdl f l'carte
     } catch (error) {
-      setMessage("Erreur f l'itissal m3a l'serveur.");
+      setMessage("Erreur de connexion au serveur.");
     }
     setLoading(false);
   };
-  if (!currentUser) return <p className="text-center mt-20 text-red-500 text-xl font-bold">Khassk t-connecta b3da!</p>;
+  
+  if (!currentUser) return <p className="text-center mt-20 text-red-500 text-xl font-bold">Vous devez d'abord vous connecter !</p>;
 
   return (
     
@@ -50,7 +51,7 @@ export default function Wallet() {
         
         <div className="text-center mb-8">
           <h2 className="text-3xl font-extrabold text-green-800">Mon Wallet 💳</h2>
-          <p className="text-gray-500 mt-2">Cherji l'flouss bach t-reservi blaysek</p>
+          <p className="text-gray-500 mt-2">Rechargez votre solde pour réserver vos trajets</p>
         </div>
 
         {/* La Carte Bancaire (Design Wa3er) */}
@@ -64,7 +65,7 @@ export default function Wallet() {
           <div className="flex justify-between items-end">
             <div>
               <p className="text-xs text-green-200 uppercase tracking-widest">Utilisateur</p>
-              <p className="font-bold tracking-widest">{currentUser.nom} {currentUser.prenom}(Passagère)</p>
+              <p className="font-bold tracking-widest">{currentUser.nom} {currentUser.prenom}</p>
             </div>
             <div className="text-4xl opacity-80">🚙</div>
           </div>
@@ -72,7 +73,7 @@ export default function Wallet() {
 
         {/* Formulaire dyal Recharge */}
         <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-          <h3 className="text-lg font-bold text-gray-800 mb-4">Recharger l'Wallet</h3>
+          <h3 className="text-lg font-bold text-gray-800 mb-4">Recharger le Wallet</h3>
           
           {message && (
             <div className="p-3 mb-4 text-sm font-bold bg-green-100 text-green-700 rounded-lg text-center">
@@ -102,7 +103,7 @@ export default function Wallet() {
               disabled={loading}
               className={`w-full font-bold py-3 rounded-xl transition shadow-lg ${loading ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700 hover:-translate-y-1'}`}
             >
-              {loading ? 'Kan-cherjiw...' : 'Recharger daba'}
+              {loading ? 'Chargement en cours...' : 'Recharger maintenant'}
             </button>
           </form>
         </div>

@@ -30,7 +30,7 @@ export default function ListeTrajets() {
         setTrajets(response.data);
         setLoading(false);
       } catch (error) {
-        setErreur("Mochkil f l'itissal m3a l'serveur.");
+        setErreur("Erreur de connexion au serveur.");
         setLoading(false);
       }
     };
@@ -56,7 +56,7 @@ export default function ListeTrajets() {
         setModal({ ...modal, status: 'error', message: response.data });
       }
     } catch (error) {
-      setModal({ ...modal, status: 'error', message: "Erreur f l'itissal m3a l'serveur!" });
+      setModal({ ...modal, status: 'error', message: "Erreur de connexion au serveur !" });
     }
   };
 
@@ -125,7 +125,7 @@ export default function ListeTrajets() {
               <h1 style={{ fontSize: 32, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.5px" }}>
                 Trajets <span style={{ color: "#4ade80" }}>Disponibles</span> 
               </h1>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,.4)", marginTop: 4 }}>Chof m3amen ghadi t-mchi l'EMSI lyoum</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,.4)", marginTop: 4 }}>Trouvez avec qui aller à l'EMSI aujourd'hui</p>
             </div>
 
             {isConducteur && (
@@ -156,7 +156,7 @@ export default function ListeTrajets() {
                 <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🏘️</span>
                 <input 
                   type="text" 
-                  placeholder="Hay (ex: Maarif)..." 
+                  placeholder="Quartier (ex: Maarif)..." 
                   value={filtreHay} 
                   onChange={(e) => setFiltreHay(e.target.value)} 
                   style={inputStyle}
@@ -183,14 +183,14 @@ export default function ListeTrajets() {
         </div>
 
         {/* LOADING & ERROR */}
-        {loading && <p style={{ color: "#4ade80", textAlign: "center", fontSize: 16 }}>Kay-jbed les trajets...</p>}
+        {loading && <p style={{ color: "#4ade80", textAlign: "center", fontSize: 16 }}>Chargement des trajets...</p>}
         {erreur && <p style={{ background: "rgba(239,68,68,.1)", color: "#f87171", border: "0.5px solid rgba(239,68,68,.2)", padding: 16, borderRadius: 12, textAlign: "center", fontSize: 14 }}>{erreur}</p>}
 
         {/* GRID TRAJETS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}>
           {trajetsFiltres.length === 0 && !loading && !erreur ? (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px 0" }}>
-              <p style={{ color: "rgba(255,255,255,.4)", fontSize: 16 }}>Makayn 7ta trajet b had l'mowassafat 😕</p>
+              <p style={{ color: "rgba(255,255,255,.4)", fontSize: 16 }}>Aucun trajet trouvé avec ces critères 😕</p>
             </div>
           ) : (
             trajetsFiltres.map((trajet) => (
@@ -206,10 +206,10 @@ export default function ListeTrajets() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px" }}>
                   {/* HNA T-T2AKKADNA BLLI KAN-AFFICHIW L'VILLE */}
                   <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}>
-                    <span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> Mn: <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.hay?.ville?.nom} - {trajet.hay?.nom}</span>
+                    <span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> De : <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.hay?.ville?.nom} - {trajet.hay?.nom}</span>
                   </div>
                   <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}>
-                    <span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> L': <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.campus?.nom}</span>
+                    <span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> Vers : <span style={{ color: "#fff", fontWeight: 600 }}>{trajet.campus?.nom}</span>
                   </div>
                   <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}>
                     <span style={{ color: "#4ade80", marginRight: 8 }}>🕒</span> {new Date(trajet.dateHeureDepart).toLocaleString('fr-FR')}
@@ -258,23 +258,23 @@ export default function ListeTrajets() {
             {modal.status === 'confirm' && (
               <>
                 <div style={{ fontSize: 40, marginBottom: 16 }}>❓</div>
-                <h3 style={{ color: "#fff", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Ta2kid l'Réservation</h3>
-                <p style={{ color: "rgba(255,255,255,.5)", fontSize: 13, marginBottom: 24 }}>Wach m2akked bghiti t-reservi blassa f had l'trajet?</p>
+                <h3 style={{ color: "#fff", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Confirmation</h3>
+                <p style={{ color: "rgba(255,255,255,.5)", fontSize: 13, marginBottom: 24 }}>Êtes-vous sûr de vouloir réserver une place pour ce trajet ?</p>
                 <div style={{ display: "flex", gap: 12 }}>
-                  <button onClick={fermerModal} style={{ flex: 1, padding: "10px", background: "rgba(255,255,255,.05)", border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 12, color: "#fff", cursor: "pointer" }}>La, 7bess</button>
-                  <button onClick={confirmerReservation} style={{ flex: 1, ...btnPrimary }}>Ah, N-reservi</button>
+                  <button onClick={fermerModal} style={{ flex: 1, padding: "10px", background: "rgba(255,255,255,.05)", border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 12, color: "#fff", cursor: "pointer" }}>Annuler</button>
+                  <button onClick={confirmerReservation} style={{ flex: 1, ...btnPrimary }}>Confirmer</button>
                 </div>
               </>
             )}
 
             {modal.status === 'loading' && (
-              <div style={{ padding: "20px 0", color: "#4ade80", fontWeight: 600 }}>Kan-ssjlou l'réservation... ⏳</div>
+              <div style={{ padding: "20px 0", color: "#4ade80", fontWeight: 600 }}>Enregistrement de la réservation... ⏳</div>
             )}
 
             {modal.status === 'success' && (
               <>
                 <div style={{ fontSize: 40, marginBottom: 16 }}>✅</div>
-                <h3 style={{ color: "#fff", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Nadi!</h3>
+                <h3 style={{ color: "#fff", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Succès !</h3>
                 <p style={{ color: "#4ade80", fontSize: 13, marginBottom: 16 }}>{modal.message}</p>
               </>
             )}
@@ -282,9 +282,9 @@ export default function ListeTrajets() {
             {modal.status === 'error' && (
               <>
                 <div style={{ fontSize: 40, marginBottom: 16 }}>❌</div>
-                <h3 style={{ color: "#fff", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Mochkil!</h3>
+                <h3 style={{ color: "#fff", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Erreur !</h3>
                 <p style={{ color: "#f87171", fontSize: 13, marginBottom: 24 }}>{modal.message}</p>
-                <button onClick={fermerModal} style={{ width: "100%", padding: "10px", background: "rgba(255,255,255,.05)", border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 12, color: "#fff", cursor: "pointer" }}>Sedd</button>
+                <button onClick={fermerModal} style={{ width: "100%", padding: "10px", background: "rgba(255,255,255,.05)", border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 12, color: "#fff", cursor: "pointer" }}>Fermer</button>
               </>
             )}
           </div>

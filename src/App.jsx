@@ -61,7 +61,7 @@ function App() {
         <Route
           path="/mes-reservations"
           element={
-            <ProtectedRoute roleRequis="passager">
+            <ProtectedRoute roleRequis="etudiant">
               <MesReservations />
             </ProtectedRoute>
           }

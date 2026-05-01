@@ -5,12 +5,15 @@ export default function Navbar() {
   const location = useLocation();
   const currentUser = JSON.parse(localStorage.getItem("user"));
 
+  // Ila kano f page d'accueil awla l'inscription, ma-n-biyenouch l-Navbar
   if (["/", "/inscription"].includes(location.pathname)) return null;
+  // Ila makanch m-connecté, ma-n-biyenouch l-Navbar
   if (!currentUser) return null;
 
   const isConducteur = currentUser.role === "conducteur";
   const isActive = (path) => location.pathname === path;
 
+  // Fonction dyal d-déconnexion
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/");
@@ -78,7 +81,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* LINKS */}
+        {/* LES LIENS DYAL L'MENU */}
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           {[
             { to: "/trajets", label: "Trajets", icon: <><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/><circle cx="20" cy="16" r="1"/></> },
@@ -100,9 +103,10 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* RIGHT */}
+        {/* L-JIHA DYAL L-IMEN (Profil, Bouton Publier, w Déconnexion) */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {/* Publish button (conducteur only) */}
+          
+          {/* Bouton Publier (kay-ban ghir l-Conducteur) */}
           {isConducteur && (
             <Link to="/publier" style={{ textDecoration: "none" }}>
               <button className="btn-publish" style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(34,197,94,.12)", border: "0.5px solid rgba(74,222,128,.25)", borderRadius: 10, padding: "8px 14px", color: "#4ade80", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "Outfit,sans-serif", transition: "all .2s", whiteSpace: "nowrap" }}>
@@ -112,7 +116,7 @@ export default function Navbar() {
             </Link>
           )}
 
-          {/* Profile chip */}
+          {/* L'badge dyal l-Profil */}
           <div className="profile-chip" style={{ display: "flex", alignItems: "center", gap: 9, background: "rgba(255,255,255,.05)", border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 100, padding: "5px 14px 5px 5px", cursor: "pointer", transition: "all .2s" }}>
             <div style={{ position: "relative", width: 32, height: 32, flexShrink: 0 }}>
               <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#4ade80,#22c55e)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#0a1a0f" }}>
@@ -128,7 +132,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Logout */}
+          {/* Bouton Déconnexion */}
           <button className="btn-logout" onClick={handleLogout}
             style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(239,68,68,.08)", border: "0.5px solid rgba(239,68,68,.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, transition: "all .2s" }}
             title="Déconnexion">

@@ -30,10 +30,10 @@ export default function Login() {
           navigate("/trajets");
         }
       } else {
-        setErreur("M3loumat ghaltin.");
+        setErreur("Informations incorrectes.");
       }
     } catch (err) {
-      setErreur("Email awla mot de passe ghalet!");
+      setErreur("Email ou mot de passe incorrect !");
     } finally {
       setLoading(false);
     }
@@ -51,8 +51,8 @@ export default function Login() {
 
       <div style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: 400, background: "rgba(8,22,12,.8)", border: "0.5px solid rgba(74,222,128,.15)", borderRadius: 24, padding: "40px", backdropFilter: "blur(24px)" }}>
         
-        <h2 style={{ fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 8, textAlign: "center" }}>Mar7ba bik f <span style={{ color: "#4ade80" }}>Yallah</span></h2>
-        <p style={{ color: "rgba(255,255,255,.5)", marginBottom: 30, textAlign: "center" }}>Dkhol l'compte dyalk.</p>
+        <h2 style={{ fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 8, textAlign: "center" }}>Bienvenue sur <span style={{ color: "#4ade80" }}>Yallah</span></h2>
+        <p style={{ color: "rgba(255,255,255,.5)", marginBottom: 30, textAlign: "center" }}>Connectez-vous à votre compte.</p>
 
         {erreur && (
           <div style={{ background: "rgba(239,68,68,.1)", color: "#f87171", padding: 16, borderRadius: 12, marginBottom: 20, textAlign: "center", fontWeight: 700 }}>
@@ -65,12 +65,12 @@ export default function Login() {
           <input type="password" placeholder="Mot de passe..." value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} required />
 
           <button type="submit" disabled={loading} style={{ width: "100%", padding: 16, background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "#fff", fontSize: 16, fontWeight: 800, border: "none", borderRadius: 12, cursor: "pointer", marginTop: 10, boxShadow: "0 4px 20px rgba(34,197,94,.25)", transition: "all .2s", opacity: loading ? 0.7 : 1 }}>
-            {loading ? "Kan-t2akdou..." : "Dkhol"}
+            {loading ? "Vérification..." : "Se connecter"}
           </button>
         </form>
 
         <p style={{ textAlign: "center", marginTop: 20, color: "rgba(255,255,255,.5)", fontSize: 14 }}>
-          Ma-3ndkch compte? <Link to="/inscription" style={{ color: "#4ade80", textDecoration: "none", fontWeight: 700 }}>Sajjel hna</Link>
+          Vous n'avez pas de compte ? <Link to="/inscription" style={{ color: "#4ade80", textDecoration: "none", fontWeight: 700 }}>S'inscrire ici</Link>
         </p>
       </div>
     </div>
