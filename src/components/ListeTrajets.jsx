@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AnimatedBackground from "./AnimatedBackground";
+import ChatModal from "./Chat"; // L-IMPORT DYAL L-CHAT JDID 💬
 
 export default function ListeTrajets() {
   const navigate = useNavigate();
@@ -16,10 +17,11 @@ export default function ListeTrajets() {
   const currentUser = JSON.parse(localStorage.getItem("user"));
   const isConducteur = currentUser?.role === "conducteur";
 
-  // Modal dyal Réservation
+  // --- LES STATES DYAL LES MODALS ---
   const [modal, setModal] = useState({ isOpen: false, trajetId: null, status: 'confirm', message: '' });
-  // Modal dyal Détails (Jdida)
   const [modalDetails, setModalDetails] = useState({ isOpen: false, trajet: null });
+  // STATE JDID DYAL L-CHAT 💬
+  const [chatConfig, setChatConfig] = useState({ isOpen: false, trajetId: null, destinataire: null });
 
   useEffect(() => {
     const fetchTrajets = async () => {
@@ -79,6 +81,21 @@ export default function ListeTrajets() {
       
       {/* --- STYLES CSS POUR LES ANIMATIONS W L-HOVER --- */}
       <style>{`
+        @keyframes pulseChat {
+          0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+          70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .btn-chat-direct {
+          flex: 1; padding: 10px; background: rgba(59,130,246,0.15); 
+          border: 1px solid rgba(59,130,246,0.4); border-radius: 12px; 
+          color: #60a5fa; font-weight: 800; font-size: 13px; font-family: 'Outfit', sans-serif;
+          cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+          transition: all 0.2s; animation: pulseChat 2s infinite;
+        }
+        .btn-chat-direct:hover {
+          background: rgba(59,130,246,0.3); transform: translateY(-2px); animation: none;
+        }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
@@ -194,7 +211,7 @@ export default function ListeTrajets() {
                   
                   {/* TOP: Badge & Prix */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ background: "rgba(34,197,94,.12)", color: "#4ade80", border: "1px solid rgba(34,197,94,.25)", padding: "6px 12px", borderRadius: 10, fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>
+                    <span style={{ background: "rgba(34,197,94,.12)", color: "#4ade80", border: "1px solid rgba(34,197,94,.25)", padding: "6px 12px", borderRadius: "10px", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>
                       {trajet.typeTrajet}
                     </span>
                     <div style={{ background: "rgba(255,255,255,.03)", padding: "6px 14px", borderRadius: 12, border: "1px solid rgba(255,255,255,.05)" }}>
@@ -206,7 +223,6 @@ export default function ListeTrajets() {
 
                   {/* MIDDLE: Itinéraire avec design moderne (Lignes w noqat) */}
                   <div style={{ position: "relative", paddingLeft: "30px", display: "flex", flexDirection: "column", gap: "20px", marginTop: "10px" }}>
-                    {/* Ligne virtuelle */}
                     <div style={{ position: "absolute", left: "9px", top: "10px", bottom: "10px", width: "2px", background: "linear-gradient(to bottom, #4ade80 50%, rgba(255,255,255,0.2) 50%)", backgroundSize: "100% 10px", borderRadius: "2px" }}></div>
                     
                     <div style={{ position: "relative" }}>
@@ -239,17 +255,32 @@ export default function ListeTrajets() {
                     </div>
                   </div>
 
-                  {/* BOUTONS D'ACTION */}
-                  <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-                    <button onClick={() => ouvrirDetails(trajet)} className="btn-secondary">
+                  {/* BOUTONS D'ACTION (Mzianin w mstfin b 3) */}
+                  <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+                    
+                    {/* 1. BOUTON CHAT DIRECT (Bayn w fih animation dyal notification) */}
+                    {!isConducteur && (
+                      <button 
+                        onClick={() => setChatConfig({ isOpen: true, trajetId: trajet.id, destinataire: trajet.conducteur })}
+                        className="btn-chat-direct"
+                        title="Discuter avec le conducteur"
+                      >
+                        <span style={{ fontSize: 16 }}>💬</span> Chat
+                      </button>
+                    )}
+
+                    {/* 2. BOUTON DÉTAILS */}
+                    <button onClick={() => ouvrirDetails(trajet)} className="btn-secondary" style={{ flex: 1, padding: "10px", fontSize: 13 }}>
                       👁️ Détails
                     </button>
+
+                    {/* 3. BOUTON RÉSERVER */}
                     <button 
                       onClick={() => ouvrirModal(trajet.id)}
                       disabled={trajet.placesDisponibles === 0 || isConducteur}
-                      className="btn-primary"
+                      className="btn-primary" style={{ flex: 1.2, padding: "10px", fontSize: 13 }}
                     >
-                      {trajet.placesDisponibles === 0 ? 'Complet' : (isConducteur ? 'Ton Trajet' : `Réserver (${trajet.placesDisponibles})`)}
+                      {trajet.placesDisponibles === 0 ? 'Complet' : (isConducteur ? 'Ton Trajet' : `Réserver`)}
                     </button>
                   </div>
 
@@ -261,7 +292,7 @@ export default function ListeTrajets() {
       </div>
 
       {/* =========================================
-          MODAL DYAL RÉSERVATION (Li kant 3ndk) 
+          MODAL DYAL RÉSERVATION 
           ========================================= */}
       {modal.isOpen && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,.7)", backdropFilter: "blur(10px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, animation: "fadeIn 0.2s ease" }}>
@@ -304,13 +335,12 @@ export default function ListeTrajets() {
       )}
 
       {/* =========================================
-          MODAL DYAL DÉTAILS (Jdida w Wa3ra) 
+          MODAL DYAL DÉTAILS
           ========================================= */}
       {modalDetails.isOpen && modalDetails.trajet && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,.7)", backdropFilter: "blur(10px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, animation: "fadeIn 0.2s ease" }}>
           <div style={{ background: "rgba(10,26,15,1)", border: "1px solid rgba(255,255,255,.1)", borderRadius: 24, padding: 32, width: "100%", maxWidth: 400, boxShadow: "0 20px 50px rgba(0,0,0,0.5)", position: "relative" }}>
             
-            {/* Bouton Fermer (X) */}
             <button onClick={fermerDetails} style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,.05)", border: "none", color: "#fff", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }} onMouseOver={e => e.currentTarget.style.background = "rgba(239,68,68,.2)"} onMouseOut={e => e.currentTarget.style.background = "rgba(255,255,255,.05)"}>✖</button>
 
             <h3 style={{ color: "#fff", fontSize: 22, fontWeight: 900, marginBottom: 24, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
@@ -352,16 +382,31 @@ export default function ListeTrajets() {
               </div>
             </div>
 
-            <button 
-              onClick={() => { fermerDetails(); ouvrirModal(modalDetails.trajet.id); }}
-              disabled={modalDetails.trajet.placesDisponibles === 0 || isConducteur}
-              className="btn-primary" style={{ width: "100%", padding: 14, fontSize: 15 }}
-            >
-              {modalDetails.trajet.placesDisponibles === 0 ? 'Trajet Complet' : (isConducteur ? 'C\'est ton trajet' : `Réserver maintenant`)}
-            </button>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              {/* BOUTON RÉSERVER */}
+              <button 
+                onClick={() => { fermerDetails(); ouvrirModal(modalDetails.trajet.id); }}
+                disabled={modalDetails.trajet.placesDisponibles === 0 || isConducteur}
+                className="btn-primary" style={{ width: "100%", padding: 14, fontSize: 15 }}
+              >
+                {modalDetails.trajet.placesDisponibles === 0 ? 'Trajet Complet' : (isConducteur ? 'C\'est ton trajet' : `Réserver maintenant`)}
+              </button>
+            </div>
 
           </div>
         </div>
+      )}
+
+      {/* =========================================
+          MODAL DYAL CHAT 💬
+          ========================================= */}
+      {chatConfig.isOpen && (
+        <ChatModal 
+          trajetId={chatConfig.trajetId} 
+          currentUser={currentUser} 
+          destinataire={chatConfig.destinataire} 
+          onClose={() => setChatConfig({ isOpen: false, trajetId: null, destinataire: null })} 
+        />
       )}
 
     </div>
