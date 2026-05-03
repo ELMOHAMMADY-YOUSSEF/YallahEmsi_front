@@ -51,7 +51,7 @@ export default function PublierTrajet() {
     try {
       const payload = {
         conducteur: { id: currentUser.id },
-        voiture: { id: 1 }, 
+        voiture: { id: currentUser.voiture.id}, 
         hay: { id: selectedHay },
         campus: { id: selectedCampus },
         prixParPlace: prix,
