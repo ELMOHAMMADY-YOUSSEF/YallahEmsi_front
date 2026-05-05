@@ -110,6 +110,7 @@ export default function Inscription() {
           Vous avez déjà un compte ? <Link to="/" style={{ color: "#4ade80", textDecoration: "none", fontWeight: 700 }}>Se connecter</Link>
         </p>
       </div>
+      //
     </div>
   );
 }

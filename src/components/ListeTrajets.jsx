@@ -104,6 +104,89 @@ export default function ListeTrajets() {
           from { opacity: 0; }
           to { opacity: 1; }
         }
+
+        /* --- STYLES JDAD DYAL L-FILTRE (AIRBNB STYLE) --- */
+        .search-bar-container {
+          display: flex;
+          background: rgba(10, 26, 15, 0.85);
+          border: 1px solid rgba(74, 222, 128, 0.2);
+          border-radius: 100px;
+          padding: 8px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+          margin-bottom: 40px;
+          animation: fadeUp 0.5s ease forwards;
+          backdrop-filter: blur(20px);
+          max-width: 900px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .search-item {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 24px;
+          border-radius: 50px;
+          transition: all 0.3s ease;
+          position: relative;
+        }
+        .search-item:hover, .search-item:focus-within {
+          background: rgba(255, 255, 255, 0.05);
+          box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.1);
+        }
+        .search-divider {
+          width: 1px;
+          height: 36px;
+          background: rgba(255, 255, 255, 0.1);
+          margin: auto 4px;
+        }
+        .search-icon {
+          font-size: 22px;
+          opacity: 0.9;
+        }
+        .search-input-group {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+        .search-label {
+          font-size: 11px;
+          text-transform: uppercase;
+          font-weight: 800;
+          color: #4ade80;
+          margin-bottom: 2px;
+          letter-spacing: 0.5px;
+        }
+        .search-input {
+          background: transparent;
+          border: none;
+          color: #fff;
+          font-family: 'Outfit', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          outline: none;
+          width: 100%;
+        }
+        .search-input::placeholder {
+          color: rgba(255, 255, 255, 0.3);
+        }
+        @media (max-width: 768px) {
+          .search-bar-container {
+            flex-direction: column;
+            border-radius: 24px;
+            padding: 12px;
+          }
+          .search-divider {
+            width: 100%;
+            height: 1px;
+            margin: 8px 0;
+          }
+          .search-item {
+            border-radius: 16px;
+          }
+        }
+
+        /* --- STYLES DYAL TRAJETS CARDS --- */
         .trajet-card {
           background: linear-gradient(145deg, rgba(15,35,20,0.9) 0%, rgba(8,22,12,0.95) 100%);
           border: 1px solid rgba(74,222,128,0.1);
@@ -146,19 +229,12 @@ export default function ListeTrajets() {
           transition: all 0.2s ease; flex: 1; text-align: center;
         }
         .btn-secondary:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.3); transform: translateY(-2px); }
-
-        .input-modern {
-          width: 100%; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
-          border-radius: 14px; padding: 12px 14px 12px 42px; color: #fff; font-family: 'Outfit', sans-serif;
-          font-size: 14px; outline: none; transition: all .2s; box-sizing: border-box;
-        }
-        .input-modern:focus { border-color: rgba(74,222,128,.5); background: rgba(74,222,128,.06); }
       `}</style>
       
       <div style={{ position: "relative", zIndex: 10, maxWidth: 1100, margin: "0 auto" }}>
         
         {/* HEADER */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "30px" }}>
           <div style={{ animation: "fadeIn 0.6s ease forwards" }}>
             <h1 style={{ fontSize: 36, fontWeight: 900, color: "#fff", margin: 0, letterSpacing: "-1px", display: "flex", alignItems: "center", gap: 12 }}>
               Trajets <span style={{ color: "#4ade80" }}>Disponibles</span> 
@@ -174,21 +250,38 @@ export default function ListeTrajets() {
           )}
         </div>
 
-        {/* FILTRES (Passager uniquement) */}
+        {/* FILTRES (Passager uniquement) - DESIGN JDID AIRBNB STYLE 🔥 */}
         {!isConducteur && (
-          <div style={{ display: "flex", gap: "16px", background: "rgba(255,255,255,.02)", padding: "20px", borderRadius: "20px", border: "1px solid rgba(255,255,255,.05)", flexWrap: "wrap", marginBottom: "40px", backdropFilter: "blur(10px)", animation: "fadeUp 0.5s ease forwards" }}>
-            <div style={{ flex: "1 1 200px", position: "relative" }}>
-              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18 }}>🌍</span>
-              <input type="text" placeholder="Ville..." value={filtreVille} onChange={(e) => setFiltreVille(e.target.value)} className="input-modern" />
+          <div className="search-bar-container">
+            
+            <div className="search-item">
+              <span className="search-icon">🌍</span>
+              <div className="search-input-group">
+                <span className="search-label">Ville</span>
+                <input type="text" placeholder="Où allez-vous ?" value={filtreVille} onChange={(e) => setFiltreVille(e.target.value)} className="search-input" />
+              </div>
             </div>
-            <div style={{ flex: "1 1 200px", position: "relative" }}>
-              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18 }}>🏘️</span>
-              <input type="text" placeholder="Quartier (ex: Maarif)..." value={filtreHay} onChange={(e) => setFiltreHay(e.target.value)} className="input-modern" />
+
+            <div className="search-divider"></div>
+
+            <div className="search-item">
+              <span className="search-icon">🏘️</span>
+              <div className="search-input-group">
+                <span className="search-label">Quartier</span>
+                <input type="text" placeholder="Ex: Maarif..." value={filtreHay} onChange={(e) => setFiltreHay(e.target.value)} className="search-input" />
+              </div>
             </div>
-            <div style={{ flex: "1 1 200px", position: "relative" }}>
-              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18 }}>🏫</span>
-              <input type="text" placeholder="Campus (ex: Centre)..." value={filtreCampus} onChange={(e) => setFiltreCampus(e.target.value)} className="input-modern" />
+
+            <div className="search-divider"></div>
+
+            <div className="search-item">
+              <span className="search-icon">🏫</span>
+              <div className="search-input-group">
+                <span className="search-label">Campus</span>
+                <input type="text" placeholder="Ex: Centre..." value={filtreCampus} onChange={(e) => setFiltreCampus(e.target.value)} className="search-input" />
+              </div>
             </div>
+
           </div>
         )}
 
@@ -258,7 +351,7 @@ export default function ListeTrajets() {
                   {/* BOUTONS D'ACTION (Mzianin w mstfin b 3) */}
                   <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
                     
-                    {/* 1. BOUTON CHAT DIRECT (Bayn w fih animation dyal notification) */}
+                    {/* 1. BOUTON CHAT DIRECT */}
                     {!isConducteur && (
                       <button 
                         onClick={() => setChatConfig({ isOpen: true, trajetId: trajet.id, destinataire: trajet.conducteur })}
