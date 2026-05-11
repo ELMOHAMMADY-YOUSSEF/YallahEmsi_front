@@ -42,7 +42,7 @@ export default function Inscription() {
     try {
       await axios.post("http://localhost:8081/api/utilisateurs/inscription", payload);
       setMessage("✅ Compte créé avec succès !");
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/"), 1000);
     } catch (error) {
       setMessage("❌ Erreur lors de l'inscription. Veuillez vérifier vos informations.");
     } finally {
