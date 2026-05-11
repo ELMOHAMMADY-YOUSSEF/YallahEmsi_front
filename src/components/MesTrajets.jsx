@@ -38,6 +38,27 @@ export default function MesTrajets() {
     fetchData();
   }, [currentUser, navigate]);
 
+  // Fonction bach n-msse7ou trajet
+  const supprimerTrajet = async (trajetId) => {
+    // Kan-tl3ou lih message bach n-t2akdou wach bsa7 bgha y-msse7
+    if (window.confirm("⚠️ Êtes-vous sûr de vouloir supprimer ce trajet ?")) {
+      try {
+        const response = await axios.delete(`http://localhost:8081/api/trajets/supprimer/${trajetId}`);
+        
+        if (response.data.includes("✅")) {
+          alert(response.data);
+          // Hna khassk d-dir s-smiya dyal la fonction li kat-jbed lik les trajets bach t-actualiser l-page
+          // Matalan: fetchMesTrajets(); 
+          window.location.reload(); // Awla t-dir reload l-page nishan
+        } else {
+          alert(response.data); // Ila kan erreur
+        }
+      } catch (error) {
+        alert("❌ Erreur de connexion au serveur.");
+        console.error(error);
+      }
+    }
+  };
   // Fonction bach y-Accepter
   const accepterDemande = async (reservationId) => {
     try {
@@ -213,6 +234,21 @@ export default function MesTrajets() {
                       <span style={{ fontSize: 16 }}>💬</span> Boîte de réception
                     </button>
                   </div>
+                  <button 
+  onClick={() => supprimerTrajet(trajet.id)} 
+  style={{
+    background: "rgba(239, 68, 68, 0.15)", // Loun 7mer khfif
+    color: "#ef4444", 
+    border: "1px solid rgba(239, 68, 68, 0.3)",
+    padding: "8px 16px",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    fontFamily: "Outfit, sans-serif"
+  }}
+>
+  🗑️ Supprimer
+</button>
 
                 </div>
               );
