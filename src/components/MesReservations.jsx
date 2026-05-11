@@ -10,8 +10,10 @@ export default function MesReservations() {
 
   const currentUser = JSON.parse(localStorage.getItem("user"));
 
+  // 🔥 STATE JDID DYAL L-MODAL DYAL L-ANNULATION 🔥
+  const [cancelModal, setCancelModal] = useState({ isOpen: false, status: '', reservationId: null, message: '' });
+
   useEffect(() => {
-    // Ila makanch m-connecté awla kan conducteur (Conducteur ma-kay-reservich)
     if (!currentUser || currentUser.role === "conducteur") {
       navigate("/trajets");
       return;
@@ -20,7 +22,6 @@ export default function MesReservations() {
     const fetchReservations = async () => {
       try {
         const res = await axios.get(`http://localhost:8081/api/reservations/mes-reservations/${currentUser.id}`);
-        // N-rttbouhom (L'jdad homa l'wala)
         const sortedData = res.data.sort((a, b) => b.id - a.id);
         setReservations(sortedData);
       } catch (error) {
@@ -32,13 +33,39 @@ export default function MesReservations() {
     fetchReservations();
   }, [currentUser, navigate]);
 
+  // --- LOGIQUE DYAL L-MODAL DYAL ANNULATION ---
+  const demanderAnnulation = (id) => {
+    setCancelModal({ isOpen: true, status: 'confirm', reservationId: id, message: '' });
+  };
+
+  const fermerModal = () => {
+    setCancelModal({ isOpen: false, status: '', reservationId: null, message: '' });
+  };
+
+  const confirmerAnnulation = async () => {
+    setCancelModal(prev => ({ ...prev, status: 'loading' }));
+    try {
+      const response = await axios.post(`http://localhost:8081/api/reservations/annuler/${cancelModal.reservationId}`);
+      
+      if (response.data.includes("✅")) {
+        setCancelModal({ isOpen: true, status: 'success', message: response.data, reservationId: null });
+        setTimeout(() => window.location.reload(), 2000); // Kan-tsnaw 2 tawanin w n-actualisiw
+      } else {
+        setCancelModal({ isOpen: true, status: 'error', message: response.data, reservationId: null });
+      }
+    } catch (error) {
+      setCancelModal({ isOpen: true, status: 'error', message: "❌ Erreur de connexion au serveur.", reservationId: null });
+      console.error(error);
+    }
+  };
+
   // Fonction bach n-jibou l'koulour dyal l'Statut
   const getStatusStyle = (statut) => {
     switch (statut) {
       case "confirmee":
         return { bg: "rgba(34,197,94,.15)", text: "#4ade80", border: "rgba(34,197,94,.3)", label: "✅ ACCEPTÉE" };
       case "annulee":
-        return { bg: "rgba(239,68,68,.15)", text: "#ef4444", border: "rgba(239,68,68,.3)", label: "❌ REFUSÉE" };
+        return { bg: "rgba(239,68,68,.15)", text: "#ef4444", border: "rgba(239,68,68,.3)", label: "❌ ANNULÉE" };
       default: // en_attente
         return { bg: "rgba(249,115,22,.15)", text: "#f97316", border: "rgba(249,115,22,.3)", label: "⏳ EN ATTENTE" };
     }
@@ -57,6 +84,23 @@ export default function MesReservations() {
     <div style={{ position: "relative", minHeight: "100vh", background: "#0a1a0f", padding: "3rem 2rem", fontFamily: "Outfit,sans-serif" }}>
       <AnimatedBackground />
       
+      {/* STYLE DYAL BOUTONS DYAL MODAL */}
+      <style>{`
+        .btn-modal-cancel {
+          padding: 12px 20px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+          color: #fff; border-radius: 12px; cursor: pointer; font-weight: 700; font-family: 'Outfit', sans-serif;
+          transition: all 0.2s; flex: 1;
+        }
+        .btn-modal-cancel:hover { background: rgba(255,255,255,.1); }
+
+        .btn-modal-confirm {
+          padding: 12px 20px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4);
+          color: #ef4444; border-radius: 12px; cursor: pointer; font-weight: 700; font-family: 'Outfit', sans-serif;
+          transition: all 0.2s; flex: 1;
+        }
+        .btn-modal-confirm:hover { background: rgba(239, 68, 68, 0.9); color: #fff; }
+      `}</style>
+
       <div style={{ position: "relative", zIndex: 10, maxWidth: 900, margin: "0 auto" }}>
         
         {/* HEADER */}
@@ -86,7 +130,7 @@ export default function MesReservations() {
               const statusInfo = getStatusStyle(res.statutReservation);
               
               return (
-                <div key={res.id} style={cardStyle}>
+                <div key={res.id} style={cardStyle} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseOut={e => e.currentTarget.style.transform = 'none'}>
                   
                   {/* BADGE STATUT W PRIX */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -100,9 +144,9 @@ export default function MesReservations() {
 
                   {/* ITINÉRAIRE */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px" }}>
-                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> De : <span style={{ color: "#fff", fontWeight: 600 }}>{res.trajet?.hay?.nom}</span></div>
-                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> Vers : <span style={{ color: "#fff", fontWeight: 600 }}>{res.trajet?.campus?.nom}</span></div>
-                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🕒</span> {new Date(res.trajet?.dateHeureDepart).toLocaleString('fr-FR')}</div>
+                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>📍</span> De : <span style={{ color: "#fff", fontWeight: 600 }}>{res.trajet?.typeTrajet?.toLowerCase() === 'aller' ? res.trajet?.hay?.nom : res.trajet?.campus?.nom}</span></div>
+                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🏫</span> Vers : <span style={{ color: "#fff", fontWeight: 600 }}>{res.trajet?.typeTrajet?.toLowerCase() === 'aller' ? res.trajet?.campus?.nom : res.trajet?.hay?.nom}</span></div>
+                    <div style={{ color: "rgba(255,255,255,.7)", fontSize: 14 }}><span style={{ color: "#4ade80", marginRight: 8 }}>🕒</span> {new Date(res.trajet?.dateHeureDepart).toLocaleString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
                   </div>
 
                   <div style={{ height: "0.5px", background: "rgba(255,255,255,.1)", margin: "8px 0" }} />
@@ -127,6 +171,24 @@ export default function MesReservations() {
 
                   </div>
 
+                  {/* 🔥 BOUTON D'ANNULATION MODERNISÉ 🔥 */}
+                  {res.statutReservation !== "annulee" && (
+                    <button 
+                      onClick={() => demanderAnnulation(res.id)}
+                      style={{
+                        marginTop: "8px", width: "100%", background: "transparent",
+                        color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)",
+                        padding: "10px", borderRadius: "12px", cursor: "pointer",
+                        fontWeight: "600", fontSize: "13px", fontFamily: "Outfit, sans-serif",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseOver={(e) => { e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)"; e.currentTarget.style.color = "#ef4444"; e.currentTarget.style.borderColor = "rgba(239, 68, 68, 0.3)"; }}
+                      onMouseOut={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.5)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+                    >
+                      Annuler la réservation
+                    </button>
+                  )}
+
                 </div>
               );
             })}
@@ -134,6 +196,52 @@ export default function MesReservations() {
         )}
 
       </div>
+
+      {/* =========================================
+          MODAL DYAL ANNULATION (Design Nadi 🔥)
+          ========================================= */}
+      {cancelModal.isOpen && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,.7)", backdropFilter: "blur(10px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, animation: "fadeIn 0.2s ease" }}>
+          <div style={{ background: "rgba(10,26,15,1)", border: "1px solid rgba(74,222,128,.2)", borderRadius: 24, padding: 32, width: "100%", maxWidth: 360, textAlign: "center", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
+            
+            {cancelModal.status === 'confirm' && (
+              <>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
+                <h3 style={{ color: "#fff", fontSize: 22, fontWeight: 900, marginBottom: 12 }}>Annuler la réservation ?</h3>
+                <p style={{ color: "rgba(255,255,255,.6)", fontSize: 14, marginBottom: 24, lineHeight: "1.5" }}>
+                  Êtes-vous sûr de vouloir annuler ? Si le trajet était déjà payé, le montant sera remboursé sur votre Wallet.
+                </p>
+                <div style={{ display: "flex", gap: 12 }}>
+                  <button onClick={fermerModal} className="btn-modal-cancel">Retour</button>
+                  <button onClick={confirmerAnnulation} className="btn-modal-confirm">Oui, annuler</button>
+                </div>
+              </>
+            )}
+
+            {cancelModal.status === 'loading' && (
+              <div style={{ padding: "30px 0", color: "#ef4444", fontWeight: 700, fontSize: 16 }}>Annulation en cours... ⏳</div>
+            )}
+
+            {cancelModal.status === 'success' && (
+              <>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
+                <h3 style={{ color: "#fff", fontSize: 22, fontWeight: 900, marginBottom: 12 }}>Succès !</h3>
+                <p style={{ color: "#4ade80", fontSize: 14, marginBottom: 16 }}>{cancelModal.message}</p>
+              </>
+            )}
+
+            {cancelModal.status === 'error' && (
+              <>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>❌</div>
+                <h3 style={{ color: "#fff", fontSize: 22, fontWeight: 900, marginBottom: 12 }}>Erreur !</h3>
+                <p style={{ color: "#f87171", fontSize: 14, marginBottom: 24 }}>{cancelModal.message}</p>
+                <button onClick={fermerModal} className="btn-modal-cancel" style={{ width: "100%" }}>Fermer</button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

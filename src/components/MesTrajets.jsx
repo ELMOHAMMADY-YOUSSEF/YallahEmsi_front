@@ -15,6 +15,9 @@ export default function MesTrajets() {
   // --- STATES DYAL L-CHAT W L-CONTACTS ---
   const [chatConfig, setChatConfig] = useState({ isOpen: false, trajetId: null, destinataire: null });
   const [contactsModal, setContactsModal] = useState({ isOpen: false, trajetId: null, contacts: [], loading: false });
+  
+  // 🔥 1. ZEDT STATE DYAL PASSAGERS HNA 🔥
+  const [passagersModal, setPassagersModal] = useState({ isOpen: false, trajet: null, reservations: [], loading: false });
 
   const fetchData = async () => {
     try {
@@ -40,18 +43,14 @@ export default function MesTrajets() {
 
   // Fonction bach n-msse7ou trajet
   const supprimerTrajet = async (trajetId) => {
-    // Kan-tl3ou lih message bach n-t2akdou wach bsa7 bgha y-msse7
     if (window.confirm("⚠️ Êtes-vous sûr de vouloir supprimer ce trajet ?")) {
       try {
         const response = await axios.delete(`http://localhost:8081/api/trajets/supprimer/${trajetId}`);
-        
         if (response.data.includes("✅")) {
           alert(response.data);
-          // Hna khassk d-dir s-smiya dyal la fonction li kat-jbed lik les trajets bach t-actualiser l-page
-          // Matalan: fetchMesTrajets(); 
-          window.location.reload(); // Awla t-dir reload l-page nishan
+          window.location.reload(); 
         } else {
-          alert(response.data); // Ila kan erreur
+          alert(response.data); 
         }
       } catch (error) {
         alert("❌ Erreur de connexion au serveur.");
@@ -59,11 +58,12 @@ export default function MesTrajets() {
       }
     }
   };
+
   // Fonction bach y-Accepter
   const accepterDemande = async (reservationId) => {
     try {
       await axios.post(`http://localhost:8081/api/reservations/accepter/${reservationId}`);
-      fetchData(); // N-jibou data jdida bach l'blays y-tnqssou
+      fetchData(); 
     } catch (err) { alert("Erreur lors de l'acceptation"); }
   };
 
@@ -71,7 +71,7 @@ export default function MesTrajets() {
   const refuserDemande = async (reservationId) => {
     try {
       await axios.post(`http://localhost:8081/api/reservations/refuser/${reservationId}`);
-      fetchData(); // N-jibou data jdida bach l'demande t-ghber
+      fetchData(); 
     } catch (err) { alert("Erreur lors du refus"); }
   };
 
@@ -91,8 +91,22 @@ export default function MesTrajets() {
 
   const ouvrirChat = (trajetId, destinataire) => {
     setChatConfig({ isOpen: true, trajetId, destinataire });
-    fermerContacts(); // Kan-seddou liste dyal contacts mli kay-t7el l-chat
+    fermerContacts(); 
   };
+
+  // 🔥 2. ZEDT FONCTION BACH N-JIBOU PASSAGERS 🔥
+  const ouvrirPassagers = async (trajet) => {
+    setPassagersModal({ isOpen: true, trajet: trajet, reservations: [], loading: true });
+    try {
+      const response = await axios.get(`http://localhost:8081/api/reservations/trajet/${trajet.id}`);
+      setPassagersModal({ isOpen: true, trajet: trajet, reservations: response.data, loading: false });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des passagers", error);
+      setPassagersModal(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  const fermerPassagers = () => setPassagersModal({ isOpen: false, trajet: null, reservations: [], loading: false });
 
   // --- STYLES INLINE (Dark Glassmorphism) ---
   const cardStyle = {
@@ -150,11 +164,8 @@ export default function MesTrajets() {
                     </p>
                   </div>
                   <div style={{ display: "flex", gap: "10px" }}>
-                    {/* BOUTON CHAT F DEMANDE */}
                     <button onClick={() => ouvrirChat(demande.trajet?.id, demande.passager)} style={{ width: 40, height: 40, borderRadius: 12, border: "0.5px solid rgba(59,130,246,.3)", background: "rgba(59,130,246,.15)", color: "#60a5fa", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }} onMouseOver={e=>e.currentTarget.style.background="rgba(59,130,246,.3)"} onMouseOut={e=>e.currentTarget.style.background="rgba(59,130,246,.15)"} title="Contacter">💬</button>
-                    {/* BOUTON REFUSER */}
                     <button onClick={() => refuserDemande(demande.id)} style={{ width: 40, height: 40, borderRadius: 12, border: "0.5px solid rgba(239,68,68,.3)", background: "rgba(239,68,68,.15)", color: "#ef4444", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }} onMouseOver={e=>e.currentTarget.style.background="rgba(239,68,68,.3)"} onMouseOut={e=>e.currentTarget.style.background="rgba(239,68,68,.15)"} title="Refuser">❌</button>
-                    {/* BOUTON ACCEPTER */}
                     <button onClick={() => accepterDemande(demande.id)} style={{ width: 40, height: 40, borderRadius: 12, border: "0.5px solid rgba(34,197,94,.3)", background: "rgba(34,197,94,.15)", color: "#4ade80", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }} onMouseOver={e=>e.currentTarget.style.background="rgba(34,197,94,.3)"} onMouseOut={e=>e.currentTarget.style.background="rgba(34,197,94,.15)"} title="Accepter">✅</button>
                   </div>
                 </div>
@@ -223,7 +234,6 @@ export default function MesTrajets() {
                      </div>
                   </div>
 
-                  {/* BOUTON MESSAGES JDID F L'CARTE 💬 */}
                   <div style={{ marginTop: 8 }}>
                     <button 
                       onClick={() => ouvrirContacts(trajet.id)} 
@@ -234,21 +244,43 @@ export default function MesTrajets() {
                       <span style={{ fontSize: 16 }}>💬</span> Boîte de réception
                     </button>
                   </div>
-                  <button 
-  onClick={() => supprimerTrajet(trajet.id)} 
-  style={{
-    background: "rgba(239, 68, 68, 0.15)", // Loun 7mer khfif
-    color: "#ef4444", 
-    border: "1px solid rgba(239, 68, 68, 0.3)",
-    padding: "8px 16px",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    fontFamily: "Outfit, sans-serif"
-  }}
->
-  🗑️ Supprimer
-</button>
+                  
+                  {/* 🔥 3. ZEDT BOUTON PASSAGERS 7DA SUPPRIMER 🔥 */}
+                  <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+                    <button 
+                      onClick={() => ouvrirPassagers(trajet)}
+                      style={{
+                        flex: 1,
+                        background: "rgba(34, 197, 94, 0.1)",
+                        color: "#4ade80", 
+                        border: "1px solid rgba(34, 197, 94, 0.3)",
+                        padding: "8px 16px",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        fontWeight: "bold",
+                        fontFamily: "Outfit, sans-serif"
+                      }}
+                    >
+                      👥 Passagers
+                    </button>
+
+                    <button 
+                      onClick={() => supprimerTrajet(trajet.id)} 
+                      style={{
+                        flex: 1,
+                        background: "rgba(239, 68, 68, 0.15)", 
+                        color: "#ef4444", 
+                        border: "1px solid rgba(239, 68, 68, 0.3)",
+                        padding: "8px 16px",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        fontWeight: "bold",
+                        fontFamily: "Outfit, sans-serif"
+                      }}
+                    >
+                      🗑️ Supprimer
+                    </button>
+                  </div>
 
                 </div>
               );
@@ -296,6 +328,50 @@ export default function MesTrajets() {
         </div>
       )}
 
+      {/* 🔥 4. ZEDT L-MODAL DYAL PASSAGERS HNA 🔥 */}
+      {passagersModal.isOpen && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,.7)", backdropFilter: "blur(10px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, animation: "fadeIn 0.2s ease" }}>
+          <div style={{ background: "rgba(10,26,15,1)", border: "1px solid rgba(74,222,128,.2)", borderRadius: 24, padding: 32, width: "100%", maxWidth: 450, boxShadow: "0 20px 50px rgba(0,0,0,0.5)", maxHeight: "80vh", overflowY: "auto" }}>
+            
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+              <h3 style={{ color: "#fff", fontSize: 20, fontWeight: 900, margin: 0 }}>👥 Liste des Passagers</h3>
+              <button onClick={fermerPassagers} style={{ background: "transparent", border: "none", color: "rgba(255,255,255,.5)", fontSize: 20, cursor: "pointer" }}>✖</button>
+            </div>
+
+            <div style={{ background: "rgba(34,197,94,.05)", border: "1px dashed rgba(34,197,94,.3)", padding: "12px", borderRadius: "12px", marginBottom: "20px", textAlign: "center" }}>
+              <span style={{ color: "#4ade80", fontWeight: 700 }}>{passagersModal.trajet?.placesDisponibles}</span> <span style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>places restantes sur ce trajet.</span>
+            </div>
+
+            {passagersModal.loading ? (
+              <p style={{ color: "#4ade80", textAlign: "center" }}>Chargement... ⏳</p>
+            ) : passagersModal.reservations.length === 0 ? (
+              <p style={{ color: "rgba(255,255,255,.4)", textAlign: "center", fontSize: 14 }}>Aucun passager pour le moment.</p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {passagersModal.reservations.map(res => (
+                  <div key={res.id} style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.05)", padding: "16px", borderRadius: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <p style={{ margin: 0, color: "#fff", fontWeight: 800, fontSize: 15 }}>{res.passager?.nom} {res.passager?.prenom}</p>
+                      <p style={{ margin: "4px 0 0 0", color: "rgba(255,255,255,.4)", fontSize: 12 }}>📞 {res.passager?.telephone || "Non renseigné"}</p>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <span style={{ 
+                        fontSize: 10, fontWeight: 800, padding: "4px 8px", borderRadius: "6px", textTransform: "uppercase",
+                        background: res.statutReservation === 'confirmee' ? "rgba(34,197,94,.1)" : res.statutReservation === 'annulee' ? "rgba(239,68,68,.1)" : "rgba(249,115,22,.1)",
+                        color: res.statutReservation === 'confirmee' ? "#4ade80" : res.statutReservation === 'annulee' ? "#ef4444" : "#f97316"
+                      }}>
+                        {res.statutReservation}
+                      </span>
+                      <p style={{ margin: "6px 0 0 0", color: "#fff", fontSize: 13, fontWeight: 700 }}>{res.placesReservees} place(s)</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* =========================================
           MODAL: LA CONVERSATION DE CHAT 💬
           ========================================= */}
@@ -307,7 +383,6 @@ export default function MesTrajets() {
           onClose={() => setChatConfig({ isOpen: false, trajetId: null, destinataire: null })} 
         />
       )}
-
     </div>
   );
 }
