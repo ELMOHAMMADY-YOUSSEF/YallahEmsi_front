@@ -467,7 +467,6 @@ export default function ListeTrajets() {
               <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#12351f", display: "flex", alignItems: "center", gap: 8 }}>
                 🚗 {modalDetails.trajet.voiture?.marque} {modalDetails.trajet.voiture?.modele}
               </p>
-              <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "rgba(18,53,31,.55)" }}>Couleur: {modalDetails.trajet.voiture?.couleur || "N/A"} | Immatriculation: {modalDetails.trajet.voiture?.immatriculation || "N/A"}</p>
             </div>
 
             {/* Info Trajet (Résumé) */}
