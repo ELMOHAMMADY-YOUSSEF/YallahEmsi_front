@@ -71,23 +71,23 @@ export default function PublierTrajet() {
   };
 
   const inputStyle = {
-    width: "100%", background: "rgba(255,255,255,.04)",
-    border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 12,
-    padding: "14px 16px", color: "#fff", fontFamily: "Outfit,sans-serif",
+    width: "100%", background: "rgba(0,132,61,.05)",
+    border: "0.5px solid rgba(0,132,61,.12)", borderRadius: 12,
+    padding: "14px 16px", color: "#12351f", fontFamily: "Outfit,sans-serif",
     fontSize: 14, outline: "none", transition: "all .2s"
   };
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh", background: "#0a1a0f", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem 1rem" }}>
+    <div style={{ position: "relative", minHeight: "100vh", background: "#f6fbf7", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem 1rem" }}>
       <AnimatedBackground />
 
-      <div style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: 600, background: "rgba(8,22,12,.8)", border: "0.5px solid rgba(74,222,128,.15)", borderRadius: 24, padding: "40px", backdropFilter: "blur(24px)" }}>
+      <div style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: 600, background: "rgba(255,255,255,.94)", border: "0.5px solid rgba(0,132,61,.14)", borderRadius: 24, padding: "40px", backdropFilter: "blur(24px)" }}>
         
-        <h2 style={{ fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 8 }}>Publier un <span style={{ color: "#4ade80" }}>Trajet</span> 🚗</h2>
-        <p style={{ color: "rgba(255,255,255,.5)", marginBottom: 30 }}>Remplissez les informations pour que les étudiants puissent vous trouver.</p>
+        <h2 style={{ fontSize: 32, fontWeight: 800, color: "#12351f", marginBottom: 8 }}>Publier un <span style={{ color: "#00843d" }}>Trajet</span> 🚗</h2>
+        <p style={{ color: "rgba(18,53,31,.55)", marginBottom: 30 }}>Remplissez les informations pour que les étudiants puissent vous trouver.</p>
 
         {message && (
-          <div style={{ background: message.includes("✅") ? "rgba(34,197,94,.1)" : "rgba(239,68,68,.1)", color: message.includes("✅") ? "#4ade80" : "#ef4444", padding: 16, borderRadius: 12, marginBottom: 20, textAlign: "center", fontWeight: 700 }}>
+          <div style={{ background: message.includes("✅") ? "rgba(0,132,61,.09)" : "rgba(239,68,68,.1)", color: message.includes("✅") ? "#00843d" : "#ef4444", padding: 16, borderRadius: 12, marginBottom: 20, textAlign: "center", fontWeight: 700 }}>
             {message}
           </div>
         )}
@@ -96,20 +96,20 @@ export default function PublierTrajet() {
           
           <div style={{ display: "flex", gap: "20px" }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>Type de Trajet</label>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(0,132,61,.82)", marginBottom: 8, textTransform: "uppercase" }}>Type de Trajet</label>
               <select value={typeTrajet} onChange={(e) => setTypeTrajet(e.target.value)} style={inputStyle}>
-                <option value="aller" style={{ background: "#0a1a0f" }}>Aller (Quartier ➡️ Campus)</option>
-                <option value="retour" style={{ background: "#0a1a0f" }}>Retour (Campus ➡️ Quartier)</option>
+                <option value="aller" style={{ background: "#f6fbf7" }}>Aller (Quartier ➡️ Campus)</option>
+                <option value="retour" style={{ background: "#f6fbf7" }}>Retour (Campus ➡️ Quartier)</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>🌍 Ville</label>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(0,132,61,.82)", marginBottom: 8, textTransform: "uppercase" }}>🌍 Ville</label>
             <select value={selectedVille} onChange={(e) => setSelectedVille(e.target.value)} style={inputStyle} required>
-              <option value="" style={{ background: "#0a1a0f" }}>-- Choisissez la Ville --</option>
+              <option value="" style={{ background: "#f6fbf7" }}>-- Choisissez la Ville --</option>
               {villes.map(v => (
-                <option key={v.id} value={v.id} style={{ background: "#0a1a0f" }}>{v.nom}</option>
+                <option key={v.id} value={v.id} style={{ background: "#f6fbf7" }}>{v.nom}</option>
               ))}
             </select>
           </div>
@@ -119,26 +119,26 @@ export default function PublierTrajet() {
             
             <div style={{ flex: 1 }}>
               {/* L'KTABA KAT-TBDEL */}
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(0,132,61,.82)", marginBottom: 8, textTransform: "uppercase" }}>
                 {typeTrajet === "aller" ? "📍 De (Quartier)" : "📍 Vers (Quartier)"}
               </label>
               <select value={selectedHay} onChange={(e) => setSelectedHay(e.target.value)} style={inputStyle} required disabled={!selectedVille}>
-                <option value="" style={{ background: "#0a1a0f" }}>{selectedVille ? "-- Choisissez le Quartier --" : "Choisissez d'abord une ville"}</option>
+                <option value="" style={{ background: "#f6fbf7" }}>{selectedVille ? "-- Choisissez le Quartier --" : "Choisissez d'abord une ville"}</option>
                 {hays.map(h => (
-                  <option key={h.id} value={h.id} style={{ background: "#0a1a0f" }}>{h.nom}</option>
+                  <option key={h.id} value={h.id} style={{ background: "#f6fbf7" }}>{h.nom}</option>
                 ))}
               </select>
             </div>
             
             <div style={{ flex: 1 }}>
               {/* L'KTABA KAT-TBDEL */}
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(0,132,61,.82)", marginBottom: 8, textTransform: "uppercase" }}>
                 {typeTrajet === "aller" ? "🏫 Vers (Campus)" : "🏫 De (Campus)"}
               </label>
               <select value={selectedCampus} onChange={(e) => setSelectedCampus(e.target.value)} style={inputStyle} required disabled={!selectedVille}>
-                <option value="" style={{ background: "#0a1a0f" }}>{selectedVille ? "-- Choisissez le Campus --" : "Choisissez d'abord une ville"}</option>
+                <option value="" style={{ background: "#f6fbf7" }}>{selectedVille ? "-- Choisissez le Campus --" : "Choisissez d'abord une ville"}</option>
                 {campusList.map(c => (
-                  <option key={c.id} value={c.id} style={{ background: "#0a1a0f" }}>{c.nom}</option>
+                  <option key={c.id} value={c.id} style={{ background: "#f6fbf7" }}>{c.nom}</option>
                 ))}
               </select>
             </div>
@@ -147,21 +147,21 @@ export default function PublierTrajet() {
 
           <div style={{ display: "flex", gap: "20px" }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>💰 Prix (MAD)</label>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(0,132,61,.82)", marginBottom: 8, textTransform: "uppercase" }}>💰 Prix (MAD)</label>
               <input type="number" min="0" value={prix} onChange={(e) => setPrix(e.target.value)} placeholder="Ex: 15" style={inputStyle} required />
             </div>
             <div style={{ flex: 1 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>🪑 Places Dispo</label>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(0,132,61,.82)", marginBottom: 8, textTransform: "uppercase" }}>🪑 Places Dispo</label>
               <input type="number" min="1" max="6" value={places} onChange={(e) => setPlaces(e.target.value)} style={inputStyle} required />
             </div>
           </div>
 
           <div>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>🕒 Date et Heure</label>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(0,132,61,.82)", marginBottom: 8, textTransform: "uppercase" }}>🕒 Date et Heure</label>
             <input type="datetime-local" value={dateDepart} onChange={(e) => setDateDepart(e.target.value)} style={{...inputStyle, colorScheme: "dark"}} required />
           </div>
 
-          <button type="submit" disabled={loading} style={{ width: "100%", padding: 16, background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "#fff", fontSize: 16, fontWeight: 800, border: "none", borderRadius: 12, cursor: "pointer", marginTop: 10, boxShadow: "0 4px 20px rgba(34,197,94,.25)", transition: "all .2s", opacity: loading ? 0.7 : 1 }}>
+          <button type="submit" disabled={loading} style={{ width: "100%", padding: 16, background: "linear-gradient(135deg,#009846,#007a33)", color: "#ffffff", fontSize: 16, fontWeight: 800, border: "none", borderRadius: 12, cursor: "pointer", marginTop: 10, boxShadow: "0 4px 20px rgba(0,132,61,.28)", transition: "all .2s", opacity: loading ? 0.7 : 1 }}>
             {loading ? "Publication en cours..." : "🚀 Publier le Trajet"}
           </button>
 

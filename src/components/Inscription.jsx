@@ -51,21 +51,21 @@ export default function Inscription() {
   };
 
   const inputStyle = {
-    width: "100%", background: "rgba(255,255,255,.04)", border: "0.5px solid rgba(255,255,255,.1)", 
-    borderRadius: 12, padding: "14px 16px", color: "#fff", fontFamily: "Outfit,sans-serif", 
+    width: "100%", background: "rgba(0,132,61,.05)", border: "0.5px solid rgba(0,132,61,.12)", 
+    borderRadius: 12, padding: "14px 16px", color: "#12351f", fontFamily: "Outfit,sans-serif", 
     fontSize: 14, outline: "none", transition: "all .2s", marginBottom: 15
   };
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh", background: "#0a1a0f", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem 1rem" }}>
+    <div style={{ position: "relative", minHeight: "100vh", background: "#f6fbf7", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem 1rem" }}>
       <AnimatedBackground />
 
-      <div style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: 450, background: "rgba(8,22,12,.8)", border: "0.5px solid rgba(74,222,128,.15)", borderRadius: 24, padding: "40px", backdropFilter: "blur(24px)" }}>
+      <div style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: 450, background: "rgba(255,255,255,.94)", border: "0.5px solid rgba(0,132,61,.14)", borderRadius: 24, padding: "40px", backdropFilter: "blur(24px)" }}>
         
-        <h2 style={{ fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 8, textAlign: "center" }}>Rejoindre <span style={{ color: "#4ade80" }}>Yallah EMSI</span></h2>
+        <h2 style={{ fontSize: 32, fontWeight: 800, color: "#12351f", marginBottom: 8, textAlign: "center" }}>Rejoindre <span style={{ color: "#00843d" }}>YallaHEMSI</span></h2>
 
         {message && (
-          <div style={{ background: message.includes("✅") ? "rgba(34,197,94,.1)" : "rgba(239,68,68,.1)", color: message.includes("✅") ? "#4ade80" : "#ef4444", padding: 16, borderRadius: 12, marginBottom: 20, textAlign: "center", fontWeight: 700 }}>
+          <div style={{ background: message.includes("✅") ? "rgba(0,132,61,.09)" : "rgba(239,68,68,.1)", color: message.includes("✅") ? "#00843d" : "#ef4444", padding: 16, borderRadius: 12, marginBottom: 20, textAlign: "center", fontWeight: 700 }}>
             {message}
           </div>
         )}
@@ -80,15 +80,15 @@ export default function Inscription() {
           <input type="password" placeholder="Mot de passe..." value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} required />
           <input type="text" placeholder="CNE (Code Massar)..." value={cne} onChange={(e) => setCne(e.target.value)} style={inputStyle} required />
 
-          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(74,222,128,.8)", marginBottom: 8, textTransform: "uppercase" }}>Qui êtes-vous ?</label>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(0,132,61,.82)", marginBottom: 8, textTransform: "uppercase" }}>Qui êtes-vous ?</label>
           <select value={role} onChange={(e) => setRole(e.target.value)} style={inputStyle}>
-            <option value="etudiant" style={{ background: "#0a1a0f" }}>🎓 Passager (Étudiant)</option>
-            <option value="conducteur" style={{ background: "#0a1a0f" }}>🚗 Conducteur (Propriétaire du véhicule)</option>
+            <option value="etudiant" style={{ background: "#f6fbf7" }}>🎓 Passager (Étudiant)</option>
+            <option value="conducteur" style={{ background: "#f6fbf7" }}>🚗 Conducteur (Propriétaire du véhicule)</option>
           </select>
 
           {role === "conducteur" && (
-            <div style={{ background: "rgba(74,222,128,.05)", padding: "20px", borderRadius: "16px", border: "0.5px dashed rgba(74,222,128,.3)", marginBottom: 15 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#4ade80", marginBottom: 10, textTransform: "uppercase" }}>📞 Numéro et Véhicule</label>
+            <div style={{ background: "rgba(0,132,61,.055)", padding: "20px", borderRadius: "16px", border: "0.5px dashed rgba(0,132,61,.26)", marginBottom: 15 }}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#00843d", marginBottom: 10, textTransform: "uppercase" }}>📞 Numéro et Véhicule</label>
               <input type="tel" placeholder="Numéro de Téléphone (ex: 06...)" value={telephone} onChange={(e) => setTelephone(e.target.value)} style={inputStyle} required={role === "conducteur"} />
               
               <div style={{ display: "flex", gap: 10 }}>
@@ -102,12 +102,12 @@ export default function Inscription() {
             </div>
           )}
 
-          <button type="submit" disabled={loading} style={{ width: "100%", padding: 16, background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "#fff", fontSize: 16, fontWeight: 800, border: "none", borderRadius: 12, cursor: "pointer", marginTop: 10 }}>
+          <button type="submit" disabled={loading} style={{ width: "100%", padding: 16, background: "linear-gradient(135deg,#009846,#007a33)", color: "#ffffff", fontSize: 16, fontWeight: 800, border: "none", borderRadius: 12, cursor: "pointer", marginTop: 10 }}>
             {loading ? "Création du compte en cours..." : "S'inscrire"}
           </button>
         </form>
-        <p style={{ textAlign: "center", marginTop: 20, color: "rgba(255,255,255,.5)", fontSize: 14 }}>
-          Vous avez déjà un compte ? <Link to="/" style={{ color: "#4ade80", textDecoration: "none", fontWeight: 700 }}>Se connecter</Link>
+        <p style={{ textAlign: "center", marginTop: 20, color: "rgba(18,53,31,.55)", fontSize: 14 }}>
+          Vous avez déjà un compte ? <Link to="/" style={{ color: "#00843d", textDecoration: "none", fontWeight: 700 }}>Se connecter</Link>
         </p>
       </div>
       //

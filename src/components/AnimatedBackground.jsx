@@ -21,12 +21,12 @@ export default function AnimatedBackground() {
       position: "fixed", 
       inset: 0, 
       zIndex: 0, 
-      backgroundColor: "#050e08",
+      backgroundColor: "#f6fbf7",
       
       // 🔥 L-KHEDRIYA L-PROFESSIONNELLE (KAT-BAN WA3RA F DATASHOW) 🔥
       backgroundImage: isAuthPage 
         ? `url(${currentBackground})` 
-        : "radial-gradient(circle at top, #065f46 0%, #022c22 50%, #050d07 100%)", 
+        : "radial-gradient(circle at top, #e8f5ee 0%, #ffffff 50%, #f3faf5 100%)", 
         
       backgroundSize: "cover", 
       backgroundPosition: "center",
